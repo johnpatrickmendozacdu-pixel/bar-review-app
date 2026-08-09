@@ -19,6 +19,9 @@ class Document:
     # Bar subject this document was seeded under. Drives the weighted study
     # queue. Optional: a document can be valid before it is classified.
     subject: str = ""
+    # Human-readable short name used when citing provisions, e.g. "Civil Code"
+    # gives "Civil Code, Art. 1191" instead of "Republic Act No. 386, Art. 1191".
+    short_title: str = ""
 
     def validate(self) -> None:
         """Raise ValueError if this document is not fit to commit."""

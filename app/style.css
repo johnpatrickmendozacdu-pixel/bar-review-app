@@ -1,0 +1,165 @@
+/* Deliberately plain. Native controls, big targets, one thing per screen. */
+
+:root {
+  --bg: #fdfcfa;
+  --fg: #1b1b1a;
+  --quiet: #6b6a66;
+  --line: #ddd9d2;
+  --accent: #1c5d99;
+  --again: #a33;
+  --hard: #97701f;
+  --good: #2b6a3f;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #16171a;
+    --fg: #eceae6;
+    --quiet: #9a9892;
+    --line: #33353a;
+    --accent: #7fb2e5;
+    --again: #e08a8a;
+    --hard: #d7b45f;
+    --good: #85c79b;
+  }
+}
+
+* { box-sizing: border-box; }
+
+/* A `display` rule beats the hidden attribute, which would leak the grade
+   buttons before the answer is shown. Make hidden win, always. */
+[hidden] { display: none !important; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--fg);
+  font: 17px/1.6 Georgia, "Iowan Old Style", "Times New Roman", serif;
+}
+
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid var(--line);
+  font-family: system-ui, sans-serif;
+  font-size: 0.9rem;
+  flex-wrap: wrap;
+}
+
+header nav { display: flex; gap: 1rem; }
+
+main {
+  max-width: 42rem;
+  margin: 0 auto;
+  padding: 2rem 1rem 6rem;
+}
+
+h2 { font-size: 1.3rem; line-height: 1.3; margin: 0 0 1rem; }
+h3 { font-size: 1.05rem; margin: 2.5rem 0 0.5rem; }
+
+.quiet { color: var(--quiet); font-size: 0.9rem; }
+.status { font-family: system-ui, sans-serif; margin-bottom: 1.5rem; }
+
+button, input, label { font-family: system-ui, sans-serif; }
+
+/* The one big button. Impossible to miss, impossible to mis-tap. */
+.big {
+  display: block;
+  width: 100%;
+  padding: 1.25rem;
+  margin: 0 0 1rem;
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: #fff;
+  background: var(--accent);
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+}
+.big:hover { filter: brightness(1.08); }
+
+.link {
+  background: none;
+  border: none;
+  padding: 0;
+  color: var(--accent);
+  font-size: 0.9rem;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+#picker { display: grid; gap: 0.5rem; margin-top: 1rem; }
+.mode {
+  padding: 0.85rem;
+  background: none;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  color: var(--fg);
+  font-size: 1rem;
+  cursor: pointer;
+  text-align: left;
+}
+.mode:hover { border-color: var(--accent); }
+
+/* Session */
+.card {
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  min-height: 9rem;
+}
+#card-text { white-space: pre-wrap; margin: 0 0 1rem; }
+
+#grades { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem; }
+.grade {
+  padding: 1rem 0.5rem;
+  border: 2px solid;
+  border-radius: 10px;
+  background: none;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+}
+.grade small { font-weight: 400; opacity: 0.6; font-size: 0.75rem; }
+.again { color: var(--again); border-color: var(--again); }
+.hard  { color: var(--hard);  border-color: var(--hard); }
+.good  { color: var(--good);  border-color: var(--good); }
+.grade:hover { filter: brightness(1.15); }
+
+#end { margin-top: 2rem; }
+
+/* Library */
+input[type="search"], input[type="date"], input[type="number"] {
+  width: 100%;
+  padding: 0.75rem;
+  font-size: 1rem;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--bg);
+  color: var(--fg);
+  margin-bottom: 0.5rem;
+}
+
+.result {
+  border-top: 1px solid var(--line);
+  padding: 1rem 0;
+}
+.result h3 { margin: 0 0 0.35rem; font-size: 1rem; }
+.result p { margin: 0; font-size: 0.95rem; }
+
+/* Settings */
+label { display: block; margin: 1.5rem 0 0.35rem; font-size: 0.9rem; }
+fieldset { border: 1px solid var(--line); border-radius: 8px; margin: 1.5rem 0; }
+legend { font-family: system-ui, sans-serif; font-size: 0.9rem; padding: 0 0.4rem; }
+#subjects label { display: flex; gap: 0.5rem; align-items: center; margin: 0.5rem 0; }
+#import { display: block; margin-top: 0.5rem; }
+
+mark { background: #ffe98a; color: #1b1b1a; }

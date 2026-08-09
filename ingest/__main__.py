@@ -8,6 +8,7 @@ from ingest.emit import emit
 from ingest.fetch import Fetcher
 from ingest.parse_elibrary import parse_case
 from ingest.parse_lawphil import parse_statute
+from ingest.split import split_provisions
 
 PARSERS = {"lawphil": parse_statute, "elibrary": parse_case}
 
@@ -33,12 +34,19 @@ def run(seeds: list[dict], fetcher, out_dir: pathlib.Path) -> dict:
             html = fetcher.get(seed["url"])
             doc = PARSERS[source](html, seed["url"])
             doc.subject = seed.get("subject", "")
+            doc.short_title = seed.get("short", "")
             documents.append(doc)
         except Exception as exc:  # one bad URL must not cost us the rest
             print(f"FAILED {seed['url']}: {exc}", file=sys.stderr)
             failures.append(seed["url"])
 
     manifest = emit(documents, out_dir)
+
+    provisions = [p for doc in documents for p in split_provisions(doc)]
+    pathlib.Path(out_dir, "provisions.json").write_text(
+        json.dumps(provisions, indent=1, ensure_ascii=False), encoding="utf-8"
+    )
+    manifest["provisions"] = len(provisions)
     manifest["failures"] = failures
     return manifest
 

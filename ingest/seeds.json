@@ -3,25 +3,29 @@
   "url": "https://lawphil.net/statutes/repacts/ra1949/ra_386_1949.html",
   "source": "lawphil",
   "subject": "civil",
-  "note": "Civil Code of the Philippines"
+  "note": "Civil Code of the Philippines",
+  "short": "Civil Code"
  },
  {
   "url": "https://lawphil.net/statutes/acts/act1930/act_3815_1930.html",
   "source": "lawphil",
   "subject": "criminal",
-  "note": "Revised Penal Code"
+  "note": "Revised Penal Code",
+  "short": "Revised Penal Code"
  },
  {
   "url": "https://lawphil.net/statutes/repacts/ra1989/ra_6713_1989.html",
   "source": "lawphil",
   "subject": "political",
-  "note": "Code of Conduct and Ethical Standards for Public Officials"
+  "note": "Code of Conduct and Ethical Standards for Public Officials",
+  "short": "RA 6713"
  },
  {
   "url": "https://lawphil.net/statutes/repacts/ra1997/ra_8293_1997.html",
   "source": "lawphil",
   "subject": "commercial_tax",
-  "note": "Intellectual Property Code"
+  "note": "Intellectual Property Code",
+  "short": "IP Code"
  },
  {
   "url": "https://elibrary.judiciary.gov.ph/thebookshelf/showdocs/1/70158",

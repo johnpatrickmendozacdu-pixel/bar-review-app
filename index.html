@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy"
+      content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'; base-uri 'none'; form-action 'none'; object-src 'none'">
+<title>Bar Review</title>
+<link rel="stylesheet" href="app/style.css">
+</head>
+<body>
+
+<header>
+  <button id="nav-home" class="link" type="button">Bar Review</button>
+  <nav>
+    <button id="nav-library" class="link" type="button">Search the law</button>
+    <button id="nav-settings" class="link" type="button">Settings</button>
+  </nav>
+</header>
+
+<main>
+
+  <!-- HOME: one button. Everything else is quiet. -->
+  <section id="home" class="screen">
+    <p id="status" class="status">Loading…</p>
+    <button id="start" class="big" type="button">Start today's review</button>
+    <p id="countdown" class="quiet"></p>
+    <button id="pick" class="link quiet" type="button">Pick something else</button>
+    <div id="picker" hidden>
+      <button class="mode" type="button" data-subject="">Everything</button>
+      <button class="mode" type="button" data-subject="civil">Civil Law</button>
+      <button class="mode" type="button" data-subject="criminal">Criminal Law</button>
+      <button class="mode" type="button" data-subject="political">Political Law</button>
+      <button class="mode" type="button" data-subject="commercial_tax">Commercial &amp; Tax</button>
+    </div>
+  </section>
+
+  <!-- SESSION: one card, nothing else. -->
+  <section id="session" class="screen" hidden>
+    <p id="progress" class="quiet"></p>
+    <article class="card">
+      <h2 id="card-citation"></h2>
+      <div id="card-answer" hidden>
+        <p id="card-text"></p>
+        <a id="card-source" class="quiet" target="_blank" rel="noopener noreferrer">View the official source</a>
+      </div>
+    </article>
+    <button id="reveal" class="big" type="button">Show the answer</button>
+    <div id="grades" hidden>
+      <button class="grade again" type="button" data-grade="0">Didn't know<small>1</small></button>
+      <button class="grade hard"  type="button" data-grade="3">Hard<small>2</small></button>
+      <button class="grade good"  type="button" data-grade="5">Knew it<small>3</small></button>
+    </div>
+    <button id="end" class="link quiet" type="button">End session</button>
+  </section>
+
+  <!-- DONE -->
+  <section id="done" class="screen" hidden>
+    <h2>Session finished</h2>
+    <p id="done-summary"></p>
+    <button id="done-home" class="big" type="button">Back to start</button>
+  </section>
+
+  <!-- LIBRARY -->
+  <section id="library" class="screen" hidden>
+    <label for="q">Search the law</label>
+    <input id="q" type="search" placeholder="e.g. rescission, estafa, patent" autocomplete="off">
+    <p id="results-count" class="quiet"></p>
+    <div id="results"></div>
+  </section>
+
+  <!-- SETTINGS -->
+  <section id="settings" class="screen" hidden>
+    <h2>Settings</h2>
+
+    <label for="exam-date">Your exam date</label>
+    <input id="exam-date" type="date">
+
+    <label for="new-limit">New cards per day</label>
+    <input id="new-limit" type="number" min="0" max="200" step="5">
+    <p class="quiet">Start low. 20 a day is 600 a month.</p>
+
+    <fieldset>
+      <legend>Subjects to study</legend>
+      <div id="subjects"></div>
+    </fieldset>
+
+    <h3>Your progress</h3>
+    <p class="quiet">Everything you do stays on this device. Nothing is uploaded.</p>
+    <button id="export" class="link" type="button">Save a backup file</button>
+    <label for="import" class="link">Restore from a backup file</label>
+    <input id="import" type="file" accept="application/json">
+    <p id="settings-msg" class="quiet"></p>
+
+    <h3>About the law in this app</h3>
+    <p class="quiet" id="about-corpus"></p>
+  </section>
+
+</main>
+
+<script type="module" src="app/app.js"></script>
+</body>
+</html>

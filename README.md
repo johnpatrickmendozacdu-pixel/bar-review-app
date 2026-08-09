@@ -1,7 +1,24 @@
-# Bar Review App — corpus
+# Bar Review App
 
-Philippine Bar review tool. This repo currently contains **Phase 1: the corpus
-ingest pipeline**. The study app itself comes next.
+Philippine Bar review tool. **Phase 1 (corpus) and Phase 2 (drills) are built.**
+
+## The app
+
+Open `index.html` through any web server and you get spaced-repetition drills
+over 2,878 statutory provisions. One card = one provision, and the answer is
+the **verbatim text of the law** — nothing paraphrased, nothing generated, so
+there is nothing to be wrong.
+
+```bash
+python3 -m http.server 8000   # then open http://localhost:8000
+```
+
+No build step. No framework. No `npm install`. Your progress lives in this
+browser's localStorage and is never uploaded; Settings has a backup
+export/restore.
+
+Three grades — *Didn't know* / *Hard* / *Knew it* (keys `1` `2` `3`, space to
+reveal). Cards you miss return before the session ends.
 
 ## What this does
 
@@ -19,8 +36,9 @@ Sources:
 
 ```bash
 python3 -m venv .venv && .venv/bin/pip install -r requirements.txt
-.venv/bin/pytest            # 55 tests, no network required
-.venv/bin/python -m ingest  # builds corpus/ from live sources
+.venv/bin/pytest            # 67 tests, no network required
+node app/sm2.test.js        # 12 scheduler tests
+.venv/bin/python -m ingest  # rebuilds corpus/ from live sources
 ```
 
 ## The cutoff fence
@@ -44,8 +62,13 @@ date is dropped, not dated by assumption.
 | `ingest/parse_elibrary.py` | e-Library HTML → Document |
 | `ingest/emit.py` | JSON shards + manifest + shrink check |
 | `ingest/seeds.json` | What to ingest. Add URLs here as you study |
+| `ingest/split.py` | Statutes → individual provisions (one per card) |
 | `tests/fixtures/` | Real saved pages — read the README there first |
 | `certs/` | The e-Library's missing TLS intermediate |
+| `index.html` | The whole app UI. Four screens, no more |
+| `app/sm2.js` | Spaced repetition. Pure functions, `node app/sm2.test.js` |
+| `app/app.js` | Screens, storage, search |
+| `sw.js` | Offline caching |
 
 ## Things that will bite you
 
