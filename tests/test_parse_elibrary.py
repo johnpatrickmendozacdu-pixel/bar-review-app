@@ -60,3 +60,8 @@ def test_gr_number_without_a_date_raises():
     html = "<html><body><p>G.R. No. 12345 decided at some point.</p></body></html>"
     with pytest.raises(ValueError, match="date"):
         parse_case(html, URL)
+
+
+def test_title_has_no_broken_html_artifacts(doc):
+    """The e-Library's own markup contains a malformed <BR> inside the title."""
+    assert "BR>" not in doc.title

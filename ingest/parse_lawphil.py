@@ -21,6 +21,14 @@ _ACT = re.compile(r"\bAct No\.?\s*(\d+)", re.IGNORECASE)
 # "AN ACT TO ORDAIN AND INSTITUTE THE CIVIL CODE OF THE PHILIPPINES"
 _LONG_TITLE = re.compile(r"\bAN ACT\b[^.]{10,400}")
 
+# The long title runs straight into the statute's structure with no full stop
+# between them, so cut at the first structural heading.
+_STRUCTURE = re.compile(
+    r"\b(PRELIMINARY\s+TITLE|BOOK\s+(?:ONE|TWO|I\b|II\b)|TITLE\s+(?:ONE|I\b)|"
+    r"CHAPTER\s+(?:1|I|ONE)\b|ARTICLE\s+1\b|SECTION\s+1\b)",
+    re.IGNORECASE,
+)
+
 
 def _parse_date(groups) -> datetime.date | None:
     try:
@@ -68,7 +76,7 @@ def parse_statute(html: str, source_url: str) -> Document:
 
     long_title = _LONG_TITLE.search(flat)
     if long_title:
-        title = long_title.group(0).strip()
+        title = _STRUCTURE.split(long_title.group(0))[0].strip(" ,;-")
     elif soup.title and soup.title.string:
         title = soup.title.string.strip()
     else:

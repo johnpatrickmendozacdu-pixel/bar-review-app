@@ -16,6 +16,9 @@ class Document:
     promulgation_date: datetime.date | None
     source_url: str
     text: str
+    # Bar subject this document was seeded under. Drives the weighted study
+    # queue. Optional: a document can be valid before it is classified.
+    subject: str = ""
 
     def validate(self) -> None:
         """Raise ValueError if this document is not fit to commit."""

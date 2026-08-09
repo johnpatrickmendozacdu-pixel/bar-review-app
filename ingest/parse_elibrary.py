@@ -43,6 +43,9 @@ def _title_from(soup, fallback: str) -> str:
     for marker in ("D E C I S I O N", "R E S O L U T I O N"):
         raw = raw.split(marker)[0]
     raw = raw.replace("- Supreme Court E-Library", "")
+    # The e-Library's own titles contain malformed tags, e.g. "DOLORBR>" from a
+    # broken <BR>. Strip the leaked fragment, keeping the word it collided with.
+    raw = re.sub(r"\s*<?\s*[Bb][Rr]\s*>\s*", " ", raw)
     # Drop the leading "G.R. No. NNNN - " prefix; keep the party names.
     raw = re.sub(r"^\s*[A-Z]\.?\s*[A-Z]\.?\s*Nos?\.[^-]*-\s*", "", raw).strip()
     raw = " ".join(raw.split()).strip(" -,")

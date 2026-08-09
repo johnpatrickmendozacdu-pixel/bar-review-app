@@ -64,3 +64,9 @@ def test_statute_with_no_date_anywhere_raises():
     html = "<html><title>R.A. 999</title><body>Republic Act No. 999. Some text.</body></html>"
     with pytest.raises(ValueError, match="date"):
         parse_statute(html, URL)
+
+
+def test_title_stops_before_structural_headings(doc):
+    """The long title runs into 'PRELIMINARY TITLE CHAPTER 1' in the raw text."""
+    assert "PRELIMINARY TITLE" not in doc.title.upper()
+    assert "CHAPTER" not in doc.title.upper()
