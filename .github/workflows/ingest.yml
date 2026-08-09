@@ -1,0 +1,70 @@
+name: ingest corpus
+
+on:
+  schedule:
+    - cron: "0 18 * * 0"   # Sundays 18:00 UTC (Monday 02:00 Manila)
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  issues: write
+
+jobs:
+  ingest:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - run: pip install -r requirements.txt
+
+      # continue-on-error is deliberate: a failed ingest must leave the last
+      # good corpus untouched and file an issue, not break the app.
+      - name: Run ingest
+        id: ingest
+        run: python -m ingest
+        continue-on-error: true
+
+      - name: Commit corpus if it changed
+        if: steps.ingest.outcome == 'success'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          if git diff --quiet corpus/; then
+            echo "No corpus changes."
+          else
+            git add corpus/
+            git commit -m "chore: update corpus $(date -u +%Y-%m-%d)"
+            git push
+          fi
+
+      - name: Open an issue if ingest failed
+        if: steps.ingest.outcome == 'failure'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const run = `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: `Corpus ingest failed on ${new Date().toISOString().slice(0, 10)}`,
+              body: [
+                'The scheduled ingest run failed. The last good corpus is still being served,',
+                'so the app keeps working — but it is not receiving updates.',
+                '',
+                `Run log: ${run}`,
+                '',
+                'Likely causes, in order:',
+                '1. Source site markup changed — re-capture the fixture',
+                '   (`python -m tools.capture_fixture <url> <name>`) and fix the parser',
+                '   until tests pass against the NEW fixture.',
+                '2. The e-Library certificate expired — refresh `certs/elibrary-chain.pem`',
+                '   following `certs/README.md`. The intermediate expires 2027-07-16.',
+                '3. Shrink check tripped — a scrape returned far fewer documents than the',
+                '   last good run. Investigate before overriding; this guard exists to stop',
+                '   a broken scrape from wiping a good corpus.',
+              ].join('\n'),
+            });
