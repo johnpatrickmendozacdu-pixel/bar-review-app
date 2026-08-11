@@ -318,5 +318,43 @@
    }
   ],
   "difficulty": 3
+ },
+ {
+  "id": "q-labor-0001",
+  "schema_version": 2,
+  "type": "hypothetical",
+  "subject": "labor",
+  "question": "Marisol applies for a rank-and-file post at a manufacturing firm. During onboarding HR gives her a form stating that employment is conditioned on her undertaking not to join any labor organization for the duration of her employment. She signs it because she needs the work. Two years later she joins a union anyway and is dismissed for breaching the undertaking. The employer argues Marisol freely consented and is bound by her own signature. Is the employer liable for unfair labor practice, and does her consent matter?",
+  "answer_key": "Yes, the employer is liable, and her consent does not save the arrangement. The Labor Code makes it unlawful for an employer to require as a condition of employment that a person shall not join a labor organization or shall withdraw from one to which he belongs. That is the classic yellow-dog condition, and it is unfair labor practice on its face. Consent is irrelevant because the prohibition protects the constitutional right to self-organization, which is not the employee's to bargain away as a condition of getting hired. The dismissal for joining the union is therefore not a valid exercise of management prerogative but the enforcement of a void condition. Note the numbering: this provision is Art. 248 in the original Labor Code and Art. 259 after the 2015 renumbering, and both appear in reviewers.",
+  "exceptions": "Unfair labor practice requires an employer-employee relationship, so the prohibition does not reach a genuine independent contractor arrangement. A union security clause negotiated in a collective bargaining agreement is the mirror image and is lawful: requiring membership as a condition of continued employment is permitted, whereas requiring non-membership is not. Managerial employees are ineligible to join rank-and-file organizations, so the analysis differs for them.",
+  "authorities": [
+   {
+    "doc_id": "pd-442-art-248",
+    "citation": "Labor Code, Art. 248",
+    "role": "controlling",
+    "quote": "To require as a condition of employment that a person or an employee shall not join a labor organization or shall withdraw from one to which he belongs",
+    "source_url": "https://lawphil.net/statutes/presdecs/pd1974/pd_442_1974.html"
+   }
+  ],
+  "difficulty": 2
+ },
+ {
+  "id": "q-labor-0002",
+  "schema_version": 2,
+  "type": "doctrine",
+  "subject": "labor",
+  "question": "A union charges new members a joining fee equal to one month's salary, and its constitution lets the board impose fines at its discretion with no ceiling. Members complain. What does the Labor Code say about initiation fees and fines imposed by a labor organization on its own members?",
+  "answer_key": "The Code limits them. No arbitrary or excessive initiation fees may be required of members of a legitimate labor organization, and no arbitrary, excessive or oppressive fine or forfeiture may be imposed. The test is not the existence of a fee but its reasonableness, so a fee is not unlawful merely because it is substantial, nor lawful merely because the constitution authorises it. A discretionary power to fine without ceiling is precisely what the provision guards against. This sits among the rights and conditions of membership, which also guarantee full and detailed financial reports from officers and direct election of officers by secret ballot. This is Art. 241 originally and Art. 250 after the 2015 renumbering.",
+  "exceptions": "The protection runs to members of a legitimate labor organization; an association that has not acquired legal personality is outside it. The provision governs the union's relationship with its own members, not the employer's conduct, which falls under the unfair labor practice provisions instead.",
+  "authorities": [
+   {
+    "doc_id": "pd-442-art-241",
+    "citation": "Labor Code, Art. 241",
+    "role": "controlling",
+    "quote": "No arbitrary or excessive initiation fees shall be required of the members of a legitimate labor organization nor shall arbitrary, excessive or oppressive fine and forfeiture be imposed",
+    "source_url": "https://lawphil.net/statutes/presdecs/pd1974/pd_442_1974.html"
+   }
+  ],
+  "difficulty": 1
  }
 ]

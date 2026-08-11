@@ -54,6 +54,29 @@ A failing item is dropped and reported. It is never repaired automatically.
 - **One question, one call.** State the facts, then ask something specific
   enough to have a defensible answer.
 
+## Authoring workflow
+
+Do not hand-write the mechanical fields. Scaffold them:
+
+    python -m tools.scaffold --subject labor --count 8
+
+This selects provisions that actually state a rule, picks a quote **already
+verified against the e-Library and the corpus**, and fills in the citation and
+source_url straight from the corpus so they cannot be typed wrong. It writes
+`bank/drafts.json` (gitignored). Fill the TODO fields, drop `_provision_text`,
+append to `questions.json`, and run `python -m bank`.
+
+For questions built on decisions, brief the case first:
+
+    python -m tools.brief gr-102858
+    python -m tools.brief gr-102858 --search rescission
+
+It marks each candidate sentence `[COURT]` or `[QUOTED]`. **Never quote a
+`[QUOTED]` line as the Court's holding** — decisions quote parties, lower
+courts and agencies constantly. In Director of Lands v. Abistado the line
+"Neither one nor the other is dispensable" is a Ministry of Justice opinion,
+not a holding.
+
 ## Adding items
 
 Append to `questions.json`, then:
