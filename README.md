@@ -70,6 +70,23 @@ date is dropped, not dated by assumption.
 | `app/app.js` | Screens, storage, search |
 | `sw.js` | Offline caching |
 
+## How the corpus builds itself
+
+`python -m ingest --cases --months=6 --per-month=8 --years=30`
+
+Each run crawls the next six months not yet visited, newest first, taking at
+most eight decisions per month. `corpus/crawl_state.json` records what is done
+so runs continue rather than repeat — the first attempt lacked this and spent
+its entire budget on three consecutive months of 1997.
+
+The corpus is **additive**: `emit(merge=True)` adds to what is stored, so a
+partial run can never discard what earlier runs downloaded. Fetched once, kept
+forever.
+
+A scheduled Action runs this every two hours from GitHub's IPs. The e-Library
+throttles sustained crawling from one address, which is why bulk work does not
+run from a laptop.
+
 ## Things that will bite you
 
 **The e-Library serves an incomplete TLS chain.** `certs/elibrary-chain.pem`

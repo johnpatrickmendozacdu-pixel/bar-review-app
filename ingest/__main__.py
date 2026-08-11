@@ -6,7 +6,8 @@ import pathlib
 import sys
 
 from ingest import config
-from ingest.crawl_elibrary import crawl_decision_urls
+from ingest.crawl_elibrary import crawl_decision_urls, month_url, parse_month_index
+from ingest.crawl_state import load_state, next_months, save_state
 from ingest.emit import emit
 from ingest.fetch import Fetcher
 from ingest.parse_elibrary import parse_case
@@ -58,6 +59,47 @@ def run(seeds: list[dict], fetcher, out_dir: pathlib.Path) -> dict:
     manifest["provisions"] = len(provisions)
     manifest["failures"] = failures
     return manifest
+
+
+STATE_PATH = pathlib.Path("corpus/crawl_state.json")
+
+
+def ingest_slice(fetcher, cutoff, years_back, months_per_run, per_month):
+    """Crawl the next unvisited months, capped per month so coverage spreads.
+
+    A flat cap consumed its whole budget on consecutive 1997 months. Capping
+    per month instead spreads the same effort across years.
+    """
+    done = load_state(STATE_PATH)
+    documents = []
+
+    for year, month in next_months(done, cutoff, years_back, months_per_run):
+        try:
+            index_html = fetcher.get(month_url(year, month))
+        except Exception as exc:
+            print(f"SKIP index {year}-{month:02d}: {exc}", file=sys.stderr)
+            continue
+
+        taken = 0
+        for url in parse_month_index(index_html):
+            if taken >= per_month:
+                break
+            try:
+                doc = parse_case(fetcher.get(url), url)
+            except Exception as exc:
+                print(f"FAILED {url}: {exc}", file=sys.stderr)
+                continue
+            if doc.promulgation_date > cutoff:
+                continue
+            doc.subject = tag_subject(doc.text)
+            documents.append(doc)
+            taken += 1
+
+        done.add(f"{year}-{month:02d}")
+        print(f"{year}-{month:02d}: {taken} cases", file=sys.stderr)
+
+    save_state(STATE_PATH, done)
+    return documents
 
 
 def ingest_cases(
@@ -123,11 +165,40 @@ def main() -> int:
 
     if "--cases" in sys.argv:
         limit, years_back = 200, 3
+        months_per_run, per_month = 0, 12
         for arg in sys.argv:
             if arg.startswith("--limit="):
                 limit = int(arg.split("=", 1)[1])
             if arg.startswith("--years="):
                 years_back = int(arg.split("=", 1)[1])
+            if arg.startswith("--months="):
+                months_per_run = int(arg.split("=", 1)[1])
+            if arg.startswith("--per-month="):
+                per_month = int(arg.split("=", 1)[1])
+        if months_per_run:
+            cases = ingest_slice(
+                fetcher, config.COVERAGE_DATE, years_back, months_per_run, per_month
+            )
+            statutes = []
+            for seed in load_seeds(SEEDS_PATH):
+                if seed["source"] != "lawphil":
+                    continue
+                try:
+                    doc = parse_statute(fetcher.get(seed["url"]), seed["url"], meta=seed)
+                    doc.subject = seed.get("subject", "")
+                    doc.short_title = seed.get("short", "")
+                    statutes.append(doc)
+                except Exception as exc:
+                    print(f"FAILED {seed['url']}: {exc}", file=sys.stderr)
+            manifest = emit(statutes + cases, CORPUS_DIR, merge=True)
+            provisions = [p for doc in statutes for p in split_provisions(doc)]
+            pathlib.Path(CORPUS_DIR, "provisions.json").write_text(
+                json.dumps(provisions, indent=1, ensure_ascii=False), encoding="utf-8"
+            )
+            manifest["provisions"] = len(provisions)
+            print(json.dumps(manifest, indent=1))
+            return 0
+
         oldest_first = "--oldest-first" in sys.argv
         print(
             json.dumps(

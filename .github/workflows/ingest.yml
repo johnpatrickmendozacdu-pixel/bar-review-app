@@ -2,7 +2,12 @@ name: ingest corpus
 
 on:
   schedule:
-    - cron: "0 18 * * 0"   # Sundays 18:00 UTC (Monday 02:00 Manila)
+    # Every two hours. Each run crawls a slice of months not yet visited and
+    # commits what it found, so the corpus builds itself over roughly a week
+    # and then settles into keeping up with new decisions. Runs from GitHub's
+    # IPs, which the e-Library does not throttle the way it throttles a laptop
+    # doing sustained crawling.
+    - cron: "0 */2 * * *"
   workflow_dispatch:
 
 permissions:
