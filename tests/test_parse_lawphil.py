@@ -70,3 +70,72 @@ def test_title_stops_before_structural_headings(doc):
     """The long title runs into 'PRELIMINARY TITLE CHAPTER 1' in the raw text."""
     assert "PRELIMINARY TITLE" not in doc.title.upper()
     assert "CHAPTER" not in doc.title.upper()
+
+
+def test_presidential_decree_is_recognised():
+    html = (
+        "<html><title>P.D. 442</title><body><p>PRESIDENTIAL DECREE NO. 442 "
+        "A DECREE INSTITUTING A LABOR CODE</p><p>"
+        + ("Article text here. " * 60)
+        + "</p><p>Done in the City of Manila, this 1st day of May, 1974.</p></body></html>"
+    )
+    doc = parse_statute(html, URL)
+    assert doc.id == "pd-442"
+    assert doc.citation == "Presidential Decree No. 442"
+
+
+def test_batas_pambansa_is_recognised():
+    html = (
+        "<html><title>B.P. 129</title><body><p>BATAS PAMBANSA BLG. 129 "
+        "AN ACT REORGANIZING THE JUDICIARY</p><p>"
+        + ("Section text. " * 60)
+        + "</p><p>Approved: August 14, 1981.</p></body></html>"
+    )
+    doc = parse_statute(html, URL)
+    assert doc.id == "bp-129"
+    assert doc.citation == "Batas Pambansa Blg. 129"
+
+
+def test_seed_metadata_supplies_a_date_the_text_lacks():
+    """The Constitution carries no 'Approved:' line. A curated seed declares
+    the ratification date rather than the parser guessing one."""
+    html = "<html><title>Constitution</title><body><p>" + ("We the sovereign Filipino people. " * 60) + "</p></body></html>"
+    doc = parse_statute(
+        html,
+        URL,
+        meta={"id": "const-1987", "citation": "1987 Constitution", "date": "1987-02-02"},
+    )
+    assert doc.id == "const-1987"
+    assert doc.promulgation_date == datetime.date(1987, 2, 2)
+
+
+def test_declared_metadata_wins_over_inference():
+    """A seed is curated with the document in hand; the parser is guessing.
+    The Labor Code cites RA 6727 and the Rules of Court cite RA 6657, so
+    inference from body text picks the WRONG document entirely."""
+    html = (
+        "<html><title>P.D. 442</title><body><p>PRESIDENTIAL DECREE NO. 442</p><p>"
+        + ("As amended by Republic Act No. 6727 and Republic Act No. 6715. " * 40)
+        + "</p><p>Approved: June 9, 1989.</p></body></html>"
+    )
+    doc = parse_statute(html, URL, meta={"id": "pd-442", "citation": "Presidential Decree No. 442", "date": "1974-05-01"})
+    assert doc.id == "pd-442"
+    assert doc.promulgation_date == datetime.date(1974, 5, 1)
+
+
+def test_a_statute_number_cited_in_the_body_does_not_become_the_id():
+    html = (
+        "<html><title>P.D. 442</title><body><p>PRESIDENTIAL DECREE NO. 442 "
+        "A DECREE INSTITUTING A LABOR CODE</p><p>"
+        + ("This shall not impair Republic Act No. 6727. " * 60)
+        + "</p><p>Done in the City of Manila, this 1st day of May, 1974.</p></body></html>"
+    )
+    doc = parse_statute(html, URL)
+    assert doc.id == "pd-442", "RA 6727 is cited in the body, not the document's own number"
+
+
+
+def test_a_document_with_no_recognisable_number_and_no_meta_still_raises():
+    html = "<html><title>Something</title><body><p>" + ("Text. " * 60) + "</p><p>Approved: June 1, 2000.</p></body></html>"
+    with pytest.raises(ValueError):
+        parse_statute(html, URL)

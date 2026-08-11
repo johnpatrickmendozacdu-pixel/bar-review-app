@@ -32,5 +32,66 @@
   "source": "elibrary",
   "subject": "political",
   "note": "Dolor v. House Committee on Public Accounts, habeas corpus"
+ },
+ {
+  "url": "https://lawphil.net/statutes/presdecs/pd1974/pd_442_1974.html",
+  "source": "lawphil",
+  "subject": "labor",
+  "note": "Labor Code of the Philippines",
+  "short": "Labor Code",
+  "id": "pd-442",
+  "citation": "Presidential Decree No. 442",
+  "date": "1974-05-01"
+ },
+ {
+  "url": "https://lawphil.net/consti/cons1987.html",
+  "source": "lawphil",
+  "subject": "political",
+  "note": "1987 Constitution",
+  "short": "1987 Constitution",
+  "id": "const-1987",
+  "citation": "1987 Constitution",
+  "date": "1987-02-02"
+ },
+ {
+  "url": "https://lawphil.net/courts/rules/rc_1-71_civil.html",
+  "source": "lawphil",
+  "subject": "remedial",
+  "note": "Rules of Court, Rules 1-71 (civil procedure)",
+  "short": "Rules of Court",
+  "id": "roc-civil",
+  "citation": "Rules of Court",
+  "date": "1997-07-01"
+ },
+ {
+  "url": "https://lawphil.net/statutes/repacts/ra2019/ra_11232_2019.html",
+  "source": "lawphil",
+  "subject": "commercial_tax",
+  "note": "Revised Corporation Code",
+  "short": "Revised Corporation Code"
+ },
+ {
+  "url": "https://lawphil.net/statutes/repacts/ra1997/ra_8424_1997.html",
+  "source": "lawphil",
+  "subject": "commercial_tax",
+  "note": "National Internal Revenue Code",
+  "short": "NIRC",
+  "id": "ra-8424",
+  "citation": "Republic Act No. 8424",
+  "date": "1997-12-11"
+ },
+ {
+  "url": "https://lawphil.net/statutes/repacts/ra1960/ra_3019_1960.html",
+  "source": "lawphil",
+  "subject": "political",
+  "note": "Anti-Graft and Corrupt Practices Act",
+  "short": "RA 3019"
+ },
+ {
+  "url": "https://lawphil.net/statutes/repacts/ra2004/ra_9262_2004.html",
+  "source": "lawphil",
+  "subject": "criminal",
+  "note": "Anti-VAWC Act",
+  "short": "RA 9262"
  }
 ]

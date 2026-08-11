@@ -36,7 +36,12 @@ def run(seeds: list[dict], fetcher, out_dir: pathlib.Path) -> dict:
             )
         try:
             html = fetcher.get(seed["url"])
-            doc = PARSERS[source](html, seed["url"])
+            parser = PARSERS[source]
+            doc = (
+                parser(html, seed["url"], meta=seed)
+                if source == "lawphil"
+                else parser(html, seed["url"])
+            )
             doc.subject = seed.get("subject", "")
             doc.short_title = seed.get("short", "")
             documents.append(doc)
@@ -89,7 +94,7 @@ def run_cases(fetcher, out_dir: pathlib.Path, limit: int) -> dict:
         if seed["source"] != "lawphil":
             continue
         try:
-            doc = parse_statute(fetcher.get(seed["url"]), seed["url"])
+            doc = parse_statute(fetcher.get(seed["url"]), seed["url"], meta=seed)
             doc.subject = seed.get("subject", "")
             doc.short_title = seed.get("short", "")
             statutes.append(doc)
