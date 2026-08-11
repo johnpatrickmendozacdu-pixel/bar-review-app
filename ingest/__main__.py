@@ -108,7 +108,8 @@ def run_cases(
         except Exception as exc:
             print(f"FAILED {seed['url']}: {exc}", file=sys.stderr)
 
-    manifest = emit(statutes + cases, out_dir)
+    # merge=True: the corpus is downloaded once and accumulates across runs.
+    manifest = emit(statutes + cases, out_dir, merge=True)
     provisions = [p for doc in statutes for p in split_provisions(doc)]
     pathlib.Path(out_dir, "provisions.json").write_text(
         json.dumps(provisions, indent=1, ensure_ascii=False), encoding="utf-8"

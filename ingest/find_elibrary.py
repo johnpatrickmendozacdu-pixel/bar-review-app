@@ -16,6 +16,7 @@ import sys
 from bs4 import BeautifulSoup
 
 from ingest.crawl_elibrary import MONTH_ABBR
+from ingest.text import repair_mojibake
 
 BASE = "https://elibrary.judiciary.gov.ph/thebookshelf"
 
@@ -71,4 +72,4 @@ def extract_text(html: str) -> str:
     text = soup.get_text(" ", strip=True)
     for chrome in ("Supreme Court E-Library", "Information At Your Fingertips"):
         text = text.replace(chrome, "")
-    return " ".join(text.split())
+    return " ".join(repair_mojibake(text).split())

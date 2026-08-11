@@ -7,6 +7,7 @@ from bs4 import BeautifulSoup
 
 from ingest import config
 from ingest.schema import Document
+from ingest.text import repair_mojibake
 
 # The e-Library prints a canonical header line per decision:
 #     [ G.R. No. 279692, June 11, 2025 ]
@@ -60,6 +61,7 @@ def parse_case(html: str, source_url: str) -> Document:
         tag.decompose()
 
     text = soup.get_text("\n", strip=True)
+    text = repair_mojibake(text)
     if not text.strip():
         raise ValueError(f"no text parsed from {source_url}; markup may have changed")
 

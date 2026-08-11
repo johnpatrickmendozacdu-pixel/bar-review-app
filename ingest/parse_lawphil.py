@@ -7,6 +7,7 @@ from bs4 import BeautifulSoup
 
 from ingest import config
 from ingest.schema import Document
+from ingest.text import repair_mojibake
 
 _DATE = r"([A-Z][a-z]+)\s+(\d{1,2}),\s*(\d{4})"
 
@@ -96,6 +97,7 @@ def parse_statute(html: str, source_url: str, meta: dict | None = None) -> Docum
         tag.decompose()
 
     text = soup.get_text("\n", strip=True)
+    text = repair_mojibake(text)
     if not text.strip():
         raise ValueError(f"no text parsed from {source_url}; markup may have changed")
 

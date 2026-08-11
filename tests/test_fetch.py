@@ -103,3 +103,18 @@ def test_elibrary_urls_use_the_pinned_bundle(tmp_path, sleeps):
     f.get("https://elibrary.judiciary.gov.ph/x")
     assert captured["verify"] is not False, "blanket verify=False is forbidden"
     assert str(captured["verify"]).endswith(".pem")
+
+
+def test_the_elibrary_gets_a_longer_delay_than_lawphil(tmp_path, sleeps):
+    """It refuses connections under sustained crawling; lawphil does not."""
+    recorded, sleep = sleeps
+    session = FakeSession(
+        {
+            "https://elibrary.judiciary.gov.ph/a": "A",
+            "https://lawphil.net/b": "B",
+        }
+    )
+    f = Fetcher(tmp_path, session=session, sleep=sleep)
+    f.get("https://elibrary.judiciary.gov.ph/a")
+    f.get("https://lawphil.net/b")
+    assert recorded[0] > recorded[1]

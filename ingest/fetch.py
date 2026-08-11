@@ -26,6 +26,13 @@ class Fetcher:
         self.session = session or requests.Session()
         self.session.headers = {"User-Agent": config.USER_AGENT}
 
+    def _delay_for(self, url: str) -> float:
+        """Politeness delay for this host. Government servers get more room."""
+        for host, delay in getattr(config, "HOST_RATE_LIMITS", {}).items():
+            if host in url:
+                return delay
+        return config.RATE_LIMIT_SECONDS
+
     def _verify_for(self, url: str):
         """Return the CA bundle to verify against. Never False."""
         if any(host in url for host in PINNED_HOSTS):
@@ -37,7 +44,7 @@ class Fetcher:
         if cached.exists():
             return cached.read_text(encoding="utf-8")
 
-        self.sleep(config.RATE_LIMIT_SECONDS)
+        self.sleep(self._delay_for(url))
         response = self.session.get(url, timeout=30, verify=self._verify_for(url))
         response.raise_for_status()
         cached.write_text(response.text, encoding="utf-8")

@@ -11,6 +11,11 @@ COVERAGE_DATE = datetime.date(2025, 6, 30)
 # Politeness: one request per this many seconds, per host.
 RATE_LIMIT_SECONDS = 2.0
 
+# The e-Library starts refusing connections under sustained crawling, so it
+# gets a much wider berth than lawphil's static host. Discovery needs only one
+# request per month; bulk full text comes from lawphil instead.
+HOST_RATE_LIMITS = {"elibrary.judiciary.gov.ph": 6.0}
+
 USER_AGENT = (
     "BarReviewApp/1.0 (personal law-study tool; "
     "https://github.com/YOUR_USERNAME/bar-review-app)"

@@ -23,7 +23,25 @@ def _load_previous_total(out_dir: pathlib.Path) -> int:
         return 0
 
 
-def emit(documents: list[Document], out_dir: pathlib.Path) -> dict:
+def _load_existing(out_dir: pathlib.Path) -> dict:
+    """Everything already downloaded, keyed by id."""
+    stored = {}
+    for name in ("statute.json", "case.json"):
+        path = out_dir / name
+        if path.exists():
+            for doc in json.loads(path.read_text(encoding="utf-8")):
+                stored[doc["id"]] = doc
+    return stored
+
+
+def emit(documents: list[Document], out_dir: pathlib.Path, merge: bool = False) -> dict:
+    """Write the corpus.
+
+    With `merge`, this run's documents are added to what is already stored
+    rather than replacing it, so the corpus is fetched once and accumulates
+    across scheduled slices. A run that returns two documents can then never
+    discard the two hundred already downloaded.
+    """
     out_dir = pathlib.Path(out_dir)
     out_dir.mkdir(parents=True, exist_ok=True)
 
@@ -40,29 +58,35 @@ def emit(documents: list[Document], out_dir: pathlib.Path) -> dict:
     if dupes:
         raise ValueError(f"duplicate document ids: {sorted(dupes)[:5]}")
 
+    incoming = len(_load_existing(out_dir) | {d.id: d for d in documents}) if merge else len(documents)
     previous = _load_previous_total(out_dir)
-    if previous and len(documents) < previous * config.SHRINK_THRESHOLD:
+    if previous and incoming < previous * config.SHRINK_THRESHOLD:
         raise ShrinkError(
-            f"corpus shrank from {previous} to {len(documents)} documents "
+            f"corpus shrank from {previous} to {incoming} documents "
             f"(threshold {config.SHRINK_THRESHOLD:.0%}). "
             "This is a broken scrape until proven otherwise. Nothing written."
         )
 
-    by_type = collections.defaultdict(list)
+    combined = _load_existing(out_dir) if merge else {}
     for doc in documents:
-        by_type[doc.type].append(doc.to_dict())
+        combined[doc.id] = doc.to_dict()
+
+    by_type = collections.defaultdict(list)
+    for doc in combined.values():
+        by_type[doc["type"]].append(doc)
 
     for doc_type, docs in by_type.items():
         (out_dir / f"{doc_type}.json").write_text(
             json.dumps(docs, indent=1, ensure_ascii=False), encoding="utf-8"
         )
 
+    total = sum(len(v) for v in by_type.values())
     manifest = {
         "schema_version": config.SCHEMA_VERSION,
         "generated_at": datetime.datetime.now(datetime.UTC).isoformat(),
         "coverage_date": config.COVERAGE_DATE.isoformat(),
         "counts": {t: len(d) for t, d in by_type.items()},
-        "total": len(documents),
+        "total": total,
     }
     (out_dir / "manifest.json").write_text(
         json.dumps(manifest, indent=1), encoding="utf-8"

@@ -85,3 +85,36 @@ def test_duplicate_ids_are_rejected(tmp_path):
     docs[1].id = docs[0].id
     with pytest.raises(ValueError, match="duplicate"):
         emit(docs, tmp_path)
+
+
+def test_emit_merges_with_what_is_already_stored(tmp_path):
+    """The corpus is fetched once and accumulates. A later run that sees fewer
+    documents must not discard the ones already downloaded."""
+    emit(make_docs(5, "case"), tmp_path, merge=True)
+    second = make_docs(2, "statute")
+    manifest = emit(second, tmp_path, merge=True)
+    assert manifest["total"] == 7, "existing cases must survive a statute-only run"
+
+
+def test_merge_updates_a_document_that_changed(tmp_path):
+    emit(make_docs(1), tmp_path, merge=True)
+    updated = make_docs(1)
+    updated[0].title = "Amended title"
+    emit(updated, tmp_path, merge=True)
+    data = json.loads((tmp_path / "statute.json").read_text())
+    assert len(data) == 1
+    assert data[0]["title"] == "Amended title"
+
+
+def test_merge_makes_a_partial_run_safe(tmp_path):
+    """A crawl slice of two documents must not trip the shrink guard when the
+    corpus already holds a hundred."""
+    emit(make_docs(100, "case"), tmp_path, merge=True)
+    manifest = emit(make_docs(2, "statute"), tmp_path, merge=True)
+    assert manifest["total"] == 102
+
+
+def test_without_merge_the_old_replace_behaviour_still_applies(tmp_path):
+    emit(make_docs(10), tmp_path)
+    with pytest.raises(ShrinkError):
+        emit(make_docs(2), tmp_path)
