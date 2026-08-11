@@ -27,6 +27,13 @@
     "role": "related",
     "quote": "In all transactions or contracts involving the sale or financing of real estate on installment payments",
     "source_url": "https://lawphil.net/statutes/repacts/ra1972/ra_6552_1972.html"
+   },
+   {
+    "doc_id": "ra-386-art-1484",
+    "citation": "Civil Code, Art. 1484",
+    "role": "related",
+    "quote": "In a contract of sale of personal property the price of which is payable in installments, the vendor may exercise any of the following remedies",
+    "source_url": "https://lawphil.net/statutes/repacts/ra1949/ra_386_1949.html"
    }
   ],
   "difficulty": 2,
@@ -47,7 +54,8 @@
     "source_url": "https://lawphil.net/statutes/repacts/ra1949/ra_386_1949.html"
    }
   ],
-  "difficulty": 3
+  "difficulty": 3,
+  "exceptions": "The shift to rescission is available because fulfillment became impossible, not merely inconvenient or unprofitable. Where performance remains possible, the injured party is held to the remedy it elected. Rescission under this article also requires a substantial breach; a slight or casual breach does not justify resolving the contract."
  },
  {
   "id": "q-civil-0003",
@@ -97,7 +105,8 @@
     "source_url": "https://lawphil.net/statutes/repacts/ra1949/ra_386_1949.html"
    }
   ],
-  "difficulty": 1
+  "difficulty": 1,
+  "exceptions": "All three requisites must concur, and their absence makes the contract void rather than merely voidable. Distinguish defects that do not negate existence: vitiated consent makes a contract voidable, non-compliance with the Statute of Frauds makes it unenforceable, and both presuppose a contract that exists. Certain contracts additionally require a specific form for validity, such as donations of immovable property."
  },
  {
   "id": "q-civil-0005",
@@ -131,16 +140,25 @@
   "type": "hypothetical",
   "subject": "criminal",
   "question": "Gil is attacked with a knife by Hector. Gil disarms him, and Hector turns and runs away. Gil chases him for thirty meters and stabs him in the back, killing him. Charged with homicide, Gil pleads self-defense. Will the plea succeed?",
-  "answer_key": "No. Self-defense requires unlawful aggression, reasonable necessity of the means employed to prevent or repel it, and lack of sufficient provocation by the defender. Unlawful aggression ended the moment Hector was disarmed and fled. With the aggression over, there was nothing left to repel, and Gil's pursuit converted him from defender to aggressor. The justifying circumstance does not apply.",
+  "answer_key": "No. Self-defense requires unlawful aggression, reasonable necessity of the means employed to prevent or repel it, and lack of sufficient provocation by the defender. Unlawful aggression ended the moment Hector was disarmed and fled. With the aggression over, there was nothing left to repel, and Gil's pursuit converted him from defender to aggressor. The justifying circumstance does not apply. People v. Nell puts it directly: self-defense by its very nature requires unlawful aggression initiated by the victim, and there the plea failed for exactly this reason.",
   "authorities": [
    {
     "doc_id": "act-3815-art-11",
     "citation": "Revised Penal Code, Art. 11",
     "quote": "Unlawful aggression; Second. Reasonable necessity of the means employed to prevent or repel it; Third. Lack of sufficient provocation on the part of the person defending himself",
     "source_url": "https://lawphil.net/statutes/acts/act1930/act_3815_1930.html"
+   },
+   {
+    "doc_id": "gr-109660",
+    "citation": "People v. Nell, G.R. No. 109660 (1 July 1997)",
+    "role": "related",
+    "quote": "Self-defense, by its very nature, requires the attendance of unlawful aggression initiated by the victim",
+    "source_url": "https://elibrary.judiciary.gov.ph/thebookshelf/showdocs/1/34953",
+    "context": "People of the Philippines v. Romeo Nell, G.R. No. 109660, decided 1 July 1997, Justice Panganiban writing. Nell was charged with the murder of Reynaldo Laureano. DEFENSE: he invoked self-defense, which shifts the burden to the accused to prove it by clear and convincing evidence. FINDINGS: the Court held unlawful aggression was not established at all, and that he also failed to show the reasonable necessity of the means he used. The Court defined unlawful aggression as an assault or attack, or an imminent threat of one, placing the accused's life in actual peril. VERDICT: conviction sustained; he was found guilty as principal and sentenced to reclusion perpetua with P50,000 indemnity to the heirs. TAKEAWAY: invoking self-defense is an admission of the killing, so if unlawful aggression fails, nothing is left to justify the act."
    }
   ],
-  "difficulty": 2
+  "difficulty": 2,
+  "exceptions": "Unlawful aggression is indispensable; without it neither complete nor incomplete self-defense arises. Where aggression existed but the means used were excessive, the result is incomplete self-defense, a mitigating circumstance rather than a justifying one. Retaliation differs from self-defense: in retaliation the aggression had already ceased when the accused struck, which is precisely the defect here."
  },
  {
   "id": "q-criminal-0002",
@@ -155,9 +173,18 @@
     "citation": "Revised Penal Code, Art. 11",
     "quote": "The following do not incur any criminal liability",
     "source_url": "https://lawphil.net/statutes/acts/act1930/act_3815_1930.html"
+   },
+   {
+    "doc_id": "gr-109660",
+    "citation": "People v. Nell, G.R. No. 109660 (1 July 1997)",
+    "role": "related",
+    "quote": "Self-defense, by its very nature, requires the attendance of unlawful aggression initiated by the victim",
+    "source_url": "https://elibrary.judiciary.gov.ph/thebookshelf/showdocs/1/34953",
+    "context": "People of the Philippines v. Romeo Nell, G.R. No. 109660, decided 1 July 1997, Justice Panganiban writing. Nell was charged with the murder of Reynaldo Laureano. DEFENSE: he invoked self-defense, which shifts the burden to the accused to prove it by clear and convincing evidence. FINDINGS: the Court held unlawful aggression was not established at all, and that he also failed to show the reasonable necessity of the means he used. The Court defined unlawful aggression as an assault or attack, or an imminent threat of one, placing the accused's life in actual peril. VERDICT: conviction sustained; he was found guilty as principal and sentenced to reclusion perpetua with P50,000 indemnity to the heirs. TAKEAWAY: invoking self-defense is an admission of the killing, so if unlawful aggression fails, nothing is left to justify the act."
    }
   ],
-  "difficulty": 1
+  "difficulty": 1,
+  "exceptions": "These are the requisites for defense of one's person. Defense of a relative substitutes a different third requisite, and defense of a stranger requires that the defender not be induced by revenge, resentment or another evil motive. Because invoking self-defense admits the killing, the burden of proving all requisites shifts to the accused, who must establish them by clear and convincing evidence."
  },
  {
   "id": "q-commercial_tax-0001",
@@ -165,16 +192,25 @@
   "type": "hypothetical",
   "subject": "commercial_tax",
   "question": "A software company files a Philippine patent application over a computer program that implements a new method of matching buyers and sellers in an online marketplace. The examiner rejects the application outright. The company argues the method is novel, inventive and industrially applicable, and that no prior art exists. Is novelty enough to save the application?",
-  "answer_key": "No. The rejection does not turn on novelty at all but on subject matter. Schemes, rules and methods of doing business, and programs for computers, are excluded from patent protection entirely. An excluded subject matter cannot be patented no matter how novel or inventive it is. The company would need to frame a claim to something outside the exclusion, such as a technical process or apparatus, rather than the business method or program as such.",
+  "answer_key": "No. The rejection does not turn on novelty at all but on subject matter. Schemes, rules and methods of doing business, and programs for computers, are excluded from patent protection entirely. An excluded subject matter cannot be patented no matter how novel or inventive it is. The company would need to frame a claim to something outside the exclusion, such as a technical process or apparatus, rather than the business method or program as such. Manzano v. Court of Appeals shows the practical consequence: findings on patentability by the Patent Office are given deference and accepted when consistent with the evidence, so arguing novelty against an expert body's contrary finding is an uphill fight even before the subject-matter exclusion is reached.",
   "authorities": [
    {
     "doc_id": "ra-8293-sec-22",
     "citation": "IP Code, Sec. 22",
     "quote": "Schemes, rules and methods of performing mental acts, playing games or doing business, and programs for computers",
     "source_url": "https://lawphil.net/statutes/repacts/ra1997/ra_8293_1997.html"
+   },
+   {
+    "doc_id": "gr-113388",
+    "citation": "Manzano v. Court of Appeals, G.R. No. 113388 (5 September 1997)",
+    "role": "related",
+    "quote": "Since the Patent Office is an expert body preeminently qualified to determine questions of patentability, its findings must be accepted if they are consistent with the evidence",
+    "source_url": "https://elibrary.judiciary.gov.ph/thebookshelf/showdocs/1/35203",
+    "context": "Angelita Manzano v. Court of Appeals and Melecia Madolaria, G.R. No. 113388, decided 5 September 1997, Justice Bellosillo writing. Manzano petitioned to cancel a utility model patent for an LPG burner, arguing it was neither new nor patentable. ARGUMENT: she claimed the device had been publicly known and sold before the application. The Philippine Patent Office denied cancellation and the Court of Appeals affirmed. VERDICT: the Supreme Court DENIED the petition and AFFIRMED, with costs against petitioner. REASONING: the Patent Office is an expert body whose findings on patentability are accepted when consistent with the evidence, and doubts are resolved in its favour. The Court also stated the purpose of the patent system is the advancement of the arts and sciences, not reward of the individual. TAKEAWAY: patentability findings are reviewed with deference, so a challenger carries a heavy evidentiary burden."
    }
   ],
-  "difficulty": 2
+  "difficulty": 2,
+  "exceptions": "The exclusion covers the business method or program as such. A claim framed to a technical process or an apparatus producing a technical effect may fall outside it. Note also that the exclusions are subject-matter bars, so they operate independently of novelty, inventive step and industrial applicability, and failing any of those would defeat the application separately."
  },
  {
   "id": "q-commercial_tax-0002",
@@ -189,9 +225,18 @@
     "citation": "IP Code, Sec. 22",
     "quote": "Discoveries, scientific theories and mathematical methods",
     "source_url": "https://lawphil.net/statutes/repacts/ra1997/ra_8293_1997.html"
+   },
+   {
+    "doc_id": "gr-113388",
+    "citation": "Manzano v. Court of Appeals, G.R. No. 113388 (5 September 1997)",
+    "role": "related",
+    "quote": "Since the Patent Office is an expert body preeminently qualified to determine questions of patentability, its findings must be accepted if they are consistent with the evidence",
+    "source_url": "https://elibrary.judiciary.gov.ph/thebookshelf/showdocs/1/35203",
+    "context": "Angelita Manzano v. Court of Appeals and Melecia Madolaria, G.R. No. 113388, decided 5 September 1997, Justice Bellosillo writing. Manzano petitioned to cancel a utility model patent for an LPG burner, arguing it was neither new nor patentable. ARGUMENT: she claimed the device had been publicly known and sold before the application. The Philippine Patent Office denied cancellation and the Court of Appeals affirmed. VERDICT: the Supreme Court DENIED the petition and AFFIRMED, with costs against petitioner. REASONING: the Patent Office is an expert body whose findings on patentability are accepted when consistent with the evidence, and doubts are resolved in its favour. The Court also stated the purpose of the patent system is the advancement of the arts and sciences, not reward of the individual. TAKEAWAY: patentability findings are reviewed with deference, so a challenger carries a heavy evidentiary burden."
    }
   ],
-  "difficulty": 1
+  "difficulty": 1,
+  "exceptions": "The list is not exhaustive; the Code excludes further categories including plant varieties and animal breeds other than microorganisms and non-biological or microbiological processes, aesthetic creations, and anything contrary to public order or morality. Note the carve-out within the medical-methods exclusion: it does not apply to products or compositions used in those methods, so a drug or device remains patentable even though the method of treatment is not."
  },
  {
   "id": "q-political-0001",
@@ -208,7 +253,8 @@
     "source_url": "https://lawphil.net/statutes/repacts/ra1989/ra_6713_1989.html"
    }
   ],
-  "difficulty": 2
+  "difficulty": 2,
+  "exceptions": "The prohibition reaches interests held directly or indirectly, which is what defeats an arrangement routed through a spouse or a nominee. It applies to transactions requiring approval of the official's own office; an interest in a business with no dealings before that office is not covered. Divestment within the period prescribed by law is the recognised cure where a prohibited interest is acquired by inheritance or operation of law."
  },
  {
   "id": "q-civil-0006",
@@ -225,7 +271,8 @@
     "source_url": "https://lawphil.net/statutes/repacts/ra1949/ra_386_1949.html"
    }
   ],
-  "difficulty": 3
+  "difficulty": 3,
+  "exceptions": "The distinction collapses if the contract is not reciprocal, since Art. 1191 presupposes mutual obligations. Rescission under Art. 1381 is subsidiary and unavailable while another remedy exists, and it prescribes in four years, whereas an action based on breach of a written contract prescribes in ten. Both forms require mutual restitution, so a party seeking either must be able to return what it received."
  },
  {
   "id": "q-civil-0007",
@@ -359,5 +406,25 @@
    }
   ],
   "difficulty": 1
+ },
+ {
+  "id": "q-remedial-0002",
+  "schema_version": 2,
+  "type": "hypothetical",
+  "subject": "remedial",
+  "question": "Spouses Pangilinan bought a lot on installment under a contract to sell containing a clause for automatic extrajudicial rescission on default in three consecutive monthly payments. They defaulted after paying roughly 85% of the price. They sued, and throughout the trial their theory was that the sellers had no right to cancel. They lost. On appeal to the Supreme Court, their counsel raises for the first time a wholly new argument that was never pleaded or tried below. Should the Court entertain it?",
+  "answer_key": "No. It is settled that an issue neither averred in the complaint nor raised during trial in the court below cannot be raised for the first time on appeal. The rule rests on due process and fair play: the opposing party had no opportunity to meet the new theory with evidence, and the trial court never passed upon it, so there is nothing for the appellate court to review. A party is bound by the theory it chose to litigate. This is what happened in Pangilinan v. Court of Appeals, where the petition was denied and the decision below affirmed in toto.",
+  "exceptions": "The bar is not absolute. Lack of jurisdiction over the subject matter may be raised at any stage, including on appeal, because it cannot be conferred by agreement or waived by silence. Courts may also consider a plain error affecting substantial rights, and matters of public policy, but these are narrow and do not license a party to change its theory of the case on appeal.",
+  "authorities": [
+   {
+    "doc_id": "gr-83588",
+    "citation": "Pangilinan v. Court of Appeals, G.R. No. 83588 (29 September 1997)",
+    "role": "controlling",
+    "quote": "It is settled that an issue which was neither averred in the complaint nor raised during the trial in the court below cannot be raised for the first time on appeal",
+    "source_url": "https://elibrary.judiciary.gov.ph/thebookshelf/showdocs/1/35181",
+    "context": "Spouses Adoracion and George Pangilinan v. Court of Appeals, G.R. No. 83588, decided 29 September 1997. The Pangilinans bought a 577-square-metre lot at P30 per square metre on 120 monthly installments. The contract to sell provided for automatic extrajudicial rescission on default in three consecutive installments, with forfeiture of what had been paid as rent and damages. They had paid about 85% of the price by January 1974 when the dispute arose. ARGUMENT: on appeal they advanced a theory never pleaded or tried below. VERDICT: the Supreme Court DENIED the petition and AFFIRMED the decision of the Court of Appeals in toto. REASONING: an issue neither averred in the complaint nor raised at trial cannot be raised for the first time on appeal. TAKEAWAY: a party is bound by the theory it litigated; appeal is review of what was decided, not a fresh start."
+   }
+  ],
+  "difficulty": 2
  }
 ]
