@@ -1,1 +1,206 @@
-[]
+[
+ {
+  "id": "q-civil-0001",
+  "schema_version": 1,
+  "type": "hypothetical",
+  "subject": "civil",
+  "question": "Ana agreed to sell her lot to Ben for two million pesos, payable in four equal installments. Ben paid the first two installments on time, then stopped paying without explanation and ignored Ana's demands. Ana now wants to be released from the contract entirely, and she also wants to be compensated for the eight months she lost waiting. May Ana rescind the contract and still recover damages, or must she choose one remedy or the other?",
+  "answer_key": "She may do both. In reciprocal obligations, the power to rescind is implied when one party fails to perform. The injured party chooses between demanding fulfillment and rescinding, and damages are recoverable whichever she chooses. So rescission and damages are not alternatives here. Note also that rescission under this article is properly resolution for breach, which is different from the rescission of lesion or fraud under Art. 1381.",
+  "authorities": [
+   {
+    "doc_id": "ra-386-art-1191",
+    "citation": "Civil Code, Art. 1191",
+    "quote": "The injured party may choose between the fulfillment and the rescission of the obligation, with the payment of damages in either case",
+    "source_url": "https://lawphil.net/statutes/repacts/ra1949/ra_386_1949.html"
+   }
+  ],
+  "difficulty": 2
+ },
+ {
+  "id": "q-civil-0002",
+  "schema_version": 1,
+  "type": "hypothetical",
+  "subject": "civil",
+  "question": "Carla sued Dino for rescission of their supply contract after he failed to deliver. While the case was pending, Dino's warehouse burned down and the goods he was supposed to deliver became impossible to produce. Carla had originally asked the court to compel delivery, not to rescind. Dino argues she is bound by her first choice. Is Dino correct?",
+  "answer_key": "No. Having chosen fulfillment does not permanently bar the injured party from rescission. The law expressly allows a shift to rescission when fulfillment later becomes impossible, which is exactly what the fire caused. Carla may seek rescission notwithstanding her earlier election.",
+  "authorities": [
+   {
+    "doc_id": "ra-386-art-1191",
+    "citation": "Civil Code, Art. 1191",
+    "quote": "He may also seek rescission, even after he has chosen fulfillment, if the latter should become impossible",
+    "source_url": "https://lawphil.net/statutes/repacts/ra1949/ra_386_1949.html"
+   }
+  ],
+  "difficulty": 3
+ },
+ {
+  "id": "q-civil-0003",
+  "schema_version": 1,
+  "type": "hypothetical",
+  "subject": "civil",
+  "question": "A bank legally forecloses on a borrower's property. Everything the bank does is within its contractual rights, but it deliberately schedules the public auction on the morning of the borrower's daughter's wedding, and posts notices on the family's gate, purely to humiliate them. The borrower sues for damages. The bank's defense is that it violated no specific provision of law. Does the borrower have a cause of action?",
+  "answer_key": "Yes. A right exercised purely to injure another is an abuse of right. Every person must exercise rights and perform duties with justice, honesty and good faith, and this standard governs even conduct that is otherwise lawful. The bank's timing and manner, calculated to humiliate rather than to collect, breaches that standard and grounds an action for damages.",
+  "authorities": [
+   {
+    "doc_id": "ra-386-art-19",
+    "citation": "Civil Code, Art. 19",
+    "quote": "act with justice, give everyone his due, and observe honesty and good faith",
+    "source_url": "https://lawphil.net/statutes/repacts/ra1949/ra_386_1949.html"
+   }
+  ],
+  "difficulty": 2
+ },
+ {
+  "id": "q-civil-0004",
+  "schema_version": 1,
+  "type": "doctrine",
+  "subject": "civil",
+  "question": "What three requisites must concur for a contract to exist at all?",
+  "answer_key": "Consent of the contracting parties; an object certain which is the subject matter of the contract; and the cause of the obligation established. Absent any one of the three there is no contract, which is different from a contract that exists but is voidable or unenforceable.",
+  "authorities": [
+   {
+    "doc_id": "ra-386-art-1318",
+    "citation": "Civil Code, Art. 1318",
+    "quote": "There is no contract unless the following requisites concur",
+    "source_url": "https://lawphil.net/statutes/repacts/ra1949/ra_386_1949.html"
+   }
+  ],
+  "difficulty": 1
+ },
+ {
+  "id": "q-civil-0005",
+  "schema_version": 1,
+  "type": "hypothetical",
+  "subject": "civil",
+  "question": "Elena orally agreed to sell her farmland to Fidel. Nothing was written down. Fidel later sues to compel Elena to transfer the land, and Elena moves to dismiss on the ground that the agreement is unwritten. During trial, however, Elena's counsel fails to object when Fidel testifies at length about the terms of their oral agreement. Can Elena still rely on the absence of writing?",
+  "answer_key": "No. Contracts falling under the Statute of Frauds are unenforceable, but the defect is curable: such contracts bind once ratified. Failing to object to evidence of the oral agreement ratifies it and waives the defense. The contract was never void, only unenforceable, which is precisely why ratification can save it.",
+  "authorities": [
+   {
+    "doc_id": "ra-386-art-1403",
+    "citation": "Civil Code, Art. 1403",
+    "quote": "The following contracts are unenforceable, unless they are ratified",
+    "source_url": "https://lawphil.net/statutes/repacts/ra1949/ra_386_1949.html"
+   }
+  ],
+  "difficulty": 3
+ },
+ {
+  "id": "q-criminal-0001",
+  "schema_version": 1,
+  "type": "hypothetical",
+  "subject": "criminal",
+  "question": "Gil is attacked with a knife by Hector. Gil disarms him, and Hector turns and runs away. Gil chases him for thirty meters and stabs him in the back, killing him. Charged with homicide, Gil pleads self-defense. Will the plea succeed?",
+  "answer_key": "No. Self-defense requires unlawful aggression, reasonable necessity of the means employed to prevent or repel it, and lack of sufficient provocation by the defender. Unlawful aggression ended the moment Hector was disarmed and fled. With the aggression over, there was nothing left to repel, and Gil's pursuit converted him from defender to aggressor. The justifying circumstance does not apply.",
+  "authorities": [
+   {
+    "doc_id": "act-3815-art-11",
+    "citation": "Revised Penal Code, Art. 11",
+    "quote": "Unlawful aggression; Second. Reasonable necessity of the means employed to prevent or repel it; Third. Lack of sufficient provocation on the part of the person defending himself",
+    "source_url": "https://lawphil.net/statutes/acts/act1930/act_3815_1930.html"
+   }
+  ],
+  "difficulty": 2
+ },
+ {
+  "id": "q-criminal-0002",
+  "schema_version": 1,
+  "type": "doctrine",
+  "subject": "criminal",
+  "question": "What are the three requisites of self-defense as a justifying circumstance?",
+  "answer_key": "First, unlawful aggression. Second, reasonable necessity of the means employed to prevent or repel it. Third, lack of sufficient provocation on the part of the person defending himself. All three must concur. Unlawful aggression is indispensable: without it there is nothing to justify, and the other two requisites cannot stand alone.",
+  "authorities": [
+   {
+    "doc_id": "act-3815-art-11",
+    "citation": "Revised Penal Code, Art. 11",
+    "quote": "The following do not incur any criminal liability",
+    "source_url": "https://lawphil.net/statutes/acts/act1930/act_3815_1930.html"
+   }
+  ],
+  "difficulty": 1
+ },
+ {
+  "id": "q-criminal-0003",
+  "schema_version": 1,
+  "type": "issue_spotting",
+  "subject": "criminal",
+  "question": "Ida collects money from neighbours for a lending venture that does not exist, promising monthly returns. She spends the money on herself. When one neighbour demands a refund, Ida issues a check knowing her account is closed. She then tells the neighbour that a barangay official will jail her if she complains. Identify the criminal law issues raised by these facts.",
+  "answer_key": "At least three. First, estafa by deceit: she defrauded the neighbours through a fictitious venture, and the law punishes any person who defrauds another by the enumerated means. Second, a separate issue arises from issuing a check drawn on a closed account, which raises both estafa by postdating or issuing a worthless check and a possible violation of the bouncing checks law. Third, the threat of jail raises grave threats, and the invocation of a barangay official may raise a separate issue of usurpation of authority depending on how it was made.",
+  "authorities": [
+   {
+    "doc_id": "act-3815-art-315",
+    "citation": "Revised Penal Code, Art. 315",
+    "quote": "Any person who shall defraud another by any of the means mentioned hereinbelow shall be punished by",
+    "source_url": "https://lawphil.net/statutes/acts/act1930/act_3815_1930.html"
+   }
+  ],
+  "difficulty": 3
+ },
+ {
+  "id": "q-commercial_tax-0001",
+  "schema_version": 1,
+  "type": "hypothetical",
+  "subject": "commercial_tax",
+  "question": "A software company files a Philippine patent application over a computer program that implements a new method of matching buyers and sellers in an online marketplace. The examiner rejects the application outright. The company argues the method is novel, inventive and industrially applicable, and that no prior art exists. Is novelty enough to save the application?",
+  "answer_key": "No. The rejection does not turn on novelty at all but on subject matter. Schemes, rules and methods of doing business, and programs for computers, are excluded from patent protection entirely. An excluded subject matter cannot be patented no matter how novel or inventive it is. The company would need to frame a claim to something outside the exclusion, such as a technical process or apparatus, rather than the business method or program as such.",
+  "authorities": [
+   {
+    "doc_id": "ra-8293-sec-22",
+    "citation": "IP Code, Sec. 22",
+    "quote": "Schemes, rules and methods of performing mental acts, playing games or doing business, and programs for computers",
+    "source_url": "https://lawphil.net/statutes/repacts/ra1997/ra_8293_1997.html"
+   }
+  ],
+  "difficulty": 2
+ },
+ {
+  "id": "q-commercial_tax-0002",
+  "schema_version": 1,
+  "type": "doctrine",
+  "subject": "commercial_tax",
+  "question": "Name three categories of subject matter excluded from patent protection under the Intellectual Property Code.",
+  "answer_key": "Discoveries, scientific theories and mathematical methods; schemes, rules and methods of performing mental acts, playing games or doing business, and programs for computers; and methods for treatment of the human or animal body by surgery or therapy and diagnostic methods practised on the human or animal body.",
+  "authorities": [
+   {
+    "doc_id": "ra-8293-sec-22",
+    "citation": "IP Code, Sec. 22",
+    "quote": "Discoveries, scientific theories and mathematical methods",
+    "source_url": "https://lawphil.net/statutes/repacts/ra1997/ra_8293_1997.html"
+   }
+  ],
+  "difficulty": 1
+ },
+ {
+  "id": "q-political-0001",
+  "schema_version": 1,
+  "type": "hypothetical",
+  "subject": "political",
+  "question": "Jose is a government engineer who reviews and approves construction permits. His wife owns a share in a contracting firm that regularly applies for those permits. Jose never signs his wife's firm's applications himself, passing them to a colleague instead, and he argues that no law specifically forbids a spouse from owning a business. Is Jose's arrangement lawful?",
+  "answer_key": "Not necessarily. The Code of Conduct declares certain acts and transactions of public officials unlawful in addition to those already covered by the Constitution and existing laws, and prohibits officials from having a financial or material interest, directly or indirectly, in any transaction requiring the approval of their office. The word indirectly is what defeats Jose's defense: routing the paperwork to a colleague does not cure an interest held through his wife in transactions his own office approves.",
+  "authorities": [
+   {
+    "doc_id": "ra-6713-sec-7",
+    "citation": "RA 6713, Sec. 7",
+    "quote": "the following shall constitute prohibited acts and transactions of any public official and employee and are hereby declared to be unlawful",
+    "source_url": "https://lawphil.net/statutes/repacts/ra1989/ra_6713_1989.html"
+   }
+  ],
+  "difficulty": 2
+ },
+ {
+  "id": "q-civil-0006",
+  "schema_version": 1,
+  "type": "essay",
+  "subject": "civil",
+  "question": "Distinguish rescission under Article 1191 from rescission under Article 1381, and explain why the distinction matters to a party who has already received partial performance. Discuss.",
+  "answer_key": "Article 1191 is not truly rescission but resolution: it is a principal action arising from the reciprocal nature of the obligation, available to the injured party when the other fails to comply with what is incumbent upon him. It is grounded on breach. Article 1381 rescission, by contrast, is a subsidiary remedy grounded on economic injury or lesion, available only when the injured party has no other legal means to obtain reparation. The practical consequences follow from that difference. Under 1191 the injured party may choose between fulfillment and rescission and recover damages either way, and may still shift to rescission if fulfillment later becomes impossible. Under 1381 the remedy cannot be resorted to while another remedy exists. For a party who has already received partial performance, the characterisation determines whether mutual restitution is required and whether breach must be proven at all.",
+  "authorities": [
+   {
+    "doc_id": "ra-386-art-1191",
+    "citation": "Civil Code, Art. 1191",
+    "quote": "The power to rescind obligations is implied in reciprocal ones, in case one of the obligors should not comply with what is incumbent upon him",
+    "source_url": "https://lawphil.net/statutes/repacts/ra1949/ra_386_1949.html"
+   }
+  ],
+  "difficulty": 3
+ }
+]
