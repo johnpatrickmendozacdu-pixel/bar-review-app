@@ -110,6 +110,8 @@ function nextItem() {
     exceptionsBlock: $("exceptions-block"),
     controlling: $("controlling"),
     controllingBlock: $("controlling-block"),
+    relatedProvisions: $("related-provisions"),
+    relatedProvisionsBlock: $("related-provisions-block"),
     related: $("related"),
     relatedBlock: $("related-block"),
   });

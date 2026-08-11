@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
-import { escapeHtml, renderQuestion, splitCall } from "./render.js";
+import { escapeHtml, isCase, renderQuestion, splitCall } from "./render.js";
 
 test("html is escaped", () => {
   assert.equal(escapeHtml("<script>x</script>"), "&lt;script&gt;x&lt;/script&gt;");
@@ -34,6 +34,8 @@ test("type labels cover every item type", () => {
     exceptions: stub(), exceptionsBlock: stub(),
     controlling: { textContent: "", appendChild() {} },
     controllingBlock: stub(),
+    relatedProvisions: { textContent: "", appendChild() {} },
+    relatedProvisionsBlock: stub(),
     related: { textContent: "", appendChild() {} },
     relatedBlock: stub(),
   };
@@ -51,9 +53,18 @@ test("an empty exceptions field hides its whole block", () => {
     exceptions: stub(), exceptionsBlock: stub(),
     controlling: { textContent: "", appendChild() {} },
     controllingBlock: stub(),
+    relatedProvisions: { textContent: "", appendChild() {} },
+    relatedProvisionsBlock: stub(),
     related: { textContent: "", appendChild() {} },
     relatedBlock: stub(),
   };
   renderQuestion({ type: "doctrine", question: "Q?", answer_key: "A", exceptions: "   ", authorities: [] }, el);
   assert.equal(el.exceptionsBlock.hidden, true);
+});
+
+test("cases and provisions are told apart by document id", () => {
+  assert.equal(isCase("gr-102858"), true);
+  assert.equal(isCase("am-93-2-1011-rtc"), true);
+  assert.equal(isCase("ra-386-art-19"), false);
+  assert.equal(isCase("pd-442-art-282"), false);
 });

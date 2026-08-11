@@ -222,6 +222,7 @@ def test_a_related_authority_is_validated_exactly_like_a_controlling_one():
             "quote": "This sentence was never written by any court anywhere",
             "source_url": "https://elibrary.judiciary.gov.ph/x",
             "role": "related",
+            "context": "Context long enough to pass the case-context floor so that this test exercises the verbatim-quote check, which is what it is actually about.",
         }
     )
     with pytest.raises(ValidationError, match="not found verbatim"):
@@ -237,6 +238,7 @@ def test_a_valid_related_authority_is_accepted():
             "quote": "The writ of habeas corpus extends to all cases of illegal confinement",
             "source_url": "https://elibrary.judiciary.gov.ph/x",
             "role": "related",
+            "context": "A habeas corpus petition testing the reach of the writ over confinement ordered by a legislative committee. The Court granted relief and ordered the detainee released.",
         }
     )
     validate_item(ok, INDEX, CUTOFF)
@@ -483,3 +485,49 @@ def test_a_source_url_that_does_not_match_the_corpus_document_is_rejected():
 def test_a_matching_source_url_passes():
     ok = item_v2()
     validate_item(ok, INDEX, CUTOFF, None, None, None, {"ra-386-art-1191": "https://lawphil.net/x"})
+
+
+CASE_INDEX = {
+    **INDEX,
+    "gr-102858": {
+        "text": "we hold that in the present case the term must be understood in its normal mandatory meaning",
+        "promulgation_date": datetime.date(1997, 7, 28),
+    },
+}
+
+
+def case_item(**overrides):
+    base = item_v2()
+    base["authorities"].append(
+        {
+            "doc_id": "gr-102858",
+            "citation": "Director of Lands v. Court of Appeals and Abistado, G.R. No. 102858 (28 July 1997)",
+            "role": "related",
+            "quote": "we hold that in the present case the term must be understood in its normal mandatory meaning",
+            "source_url": "https://elibrary.judiciary.gov.ph/x",
+        }
+    )
+    base["authorities"][-1].update(overrides)
+    return base
+
+
+def test_a_case_citation_without_context_is_rejected():
+    """A docket number alone teaches nothing. Who sued whom, and who won?"""
+    with pytest.raises(ValidationError, match="context"):
+        validate_item(case_item(), CASE_INDEX, CUTOFF)
+
+
+def test_a_case_citation_with_context_passes():
+    ok = case_item(
+        context="The Director of Lands challenged a registration published only in the Official Gazette. The Supreme Court reversed the Court of Appeals and dismissed the application: newspaper publication is mandatory."
+    )
+    validate_item(ok, CASE_INDEX, CUTOFF)
+
+
+def test_context_must_be_substantial_not_a_stub():
+    with pytest.raises(ValidationError, match="context"):
+        validate_item(case_item(context="A land case."), CASE_INDEX, CUTOFF)
+
+
+def test_provisions_do_not_require_context():
+    validate_item(item_v2(), INDEX, CUTOFF)

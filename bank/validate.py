@@ -26,6 +26,13 @@ MIN_QUOTE_LENGTH = 20
 # document with a real verbatim quote, so its link and its text are as
 # trustworthy as the controlling authority's.
 ROLES = frozenset({"controlling", "related"})
+
+# Document ids for decisions, as opposed to statutory provisions.
+CASE_PREFIXES = ("gr-", "am-", "ac-", "bm-")
+
+# A case citation must actually teach the case: who sued whom, what was
+# decided, and why. A docket number on its own teaches nothing.
+MIN_CONTEXT_LENGTH = 80
 DEFAULT_ROLE = "controlling"
 
 # How far two sources may drift before the difference is treated as legal
@@ -245,6 +252,14 @@ def validate_item(
                 f"Expected {expected_url!r}, got {authority.get('source_url')!r}"
             )
 
+        if is_case(doc_id):
+            context = str(authority.get("context", "")).strip()
+            if len(context) < MIN_CONTEXT_LENGTH:
+                fail(
+                    f"case {doc_id} is cited without usable context. Give the parties, "
+                    f"what was decided and why — a docket number alone teaches nothing."
+                )
+
         quote = _normalise(str(authority.get("quote", "")))
         if len(quote) < MIN_QUOTE_LENGTH:
             fail(f"quote for {doc_id} is too short to prove grounding: {quote!r}")
@@ -286,6 +301,10 @@ def validate_item(
                 f"quote for {doc_id} was not found verbatim in the corpus: "
                 f"{quote[:60]!r}"
             )
+
+
+def is_case(doc_id: str) -> bool:
+    return str(doc_id).startswith(CASE_PREFIXES)
 
 
 def role_of(authority: dict) -> str:

@@ -227,3 +227,10 @@ mark { background: #ffe98a; color: #1b1b1a; padding: 0 0.15em; }
   .card { padding: 1.25rem; }
 }
 .grade, .big, .mode { min-height: 48px; }
+
+.case-context {
+  font-size: 0.95rem;
+  line-height: 1.65;
+  margin: 0 0 0.85rem;
+  color: var(--fg);
+}

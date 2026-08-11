@@ -7,6 +7,14 @@ const TYPE_LABELS = {
   doctrine: "Doctrine",
 };
 
+// Decisions, as opposed to statutory provisions. Grouping by this rather than
+// by role is what stops a Civil Code article appearing under "Related cases".
+const CASE_PREFIXES = ["gr-", "am-", "ac-", "bm-"];
+
+export function isCase(docId) {
+  return CASE_PREFIXES.some((p) => String(docId).startsWith(p));
+}
+
 export function escapeHtml(s) {
   return String(s).replace(
     /[&<>"']/g,
@@ -43,17 +51,22 @@ export function renderQuestion(item, el) {
 
   // A related case is an authority with a different role, so both groups
   // render through the same code and carry the same guarantee.
-  const byRole = (want) =>
-    (item.authorities || []).filter((a) => (a.role || "controlling") === want);
+  // Split by what the authority IS, not by its role. A related Civil Code
+  // article is a provision, not a case, and must not sit under "Related cases".
+  const all = item.authorities || [];
+  const provisions = all.filter((a) => !isCase(a.doc_id));
+  const cases = all.filter((a) => isCase(a.doc_id));
+  const governing = provisions.filter((a) => (a.role || "controlling") === "controlling");
+  const alsoRelevant = provisions.filter((a) => a.role === "related");
 
-  const controlling = byRole("controlling");
-  const related = byRole("related");
+  renderAuthorities(governing, el.controlling);
+  el.controllingBlock.hidden = !governing.length;
 
-  renderAuthorities(controlling, el.controlling);
-  el.controllingBlock.hidden = !controlling.length;
+  renderAuthorities(alsoRelevant, el.relatedProvisions);
+  el.relatedProvisionsBlock.hidden = !alsoRelevant.length;
 
-  renderAuthorities(related, el.related);
-  el.relatedBlock.hidden = !related.length;
+  renderAuthorities(cases, el.related);
+  el.relatedBlock.hidden = !cases.length;
 }
 
 export function renderAuthorities(authorities, container) {
@@ -66,6 +79,15 @@ export function renderAuthorities(authorities, container) {
     cite.className = "quote-cite";
     cite.textContent = a.citation;
 
+    // For a decision, the story matters as much as the quote: who sued whom,
+    // what was decided, and why.
+    let story = null;
+    if (a.context) {
+      story = document.createElement("p");
+      story.className = "case-context";
+      story.textContent = a.context;
+    }
+
     const text = document.createElement("p");
     text.className = "quote-text";
     text.textContent = `"${a.quote}"`;
@@ -76,7 +98,8 @@ export function renderAuthorities(authorities, container) {
     link.rel = "noopener noreferrer";
     link.textContent = "Read the full text on the official source";
 
-    box.append(cite, text, link);
+    if (story) box.append(cite, story, text, link);
+    else box.append(cite, text, link);
     container.appendChild(box);
   }
 }
