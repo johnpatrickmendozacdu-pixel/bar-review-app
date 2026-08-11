@@ -6,6 +6,7 @@ about the law is checked against the corpus text itself.
 
 import collections
 import datetime
+import difflib
 import json
 import pathlib
 
@@ -24,6 +25,51 @@ MIN_QUOTE_LENGTH = 20
 # trustworthy as the controlling authority's.
 ROLES = frozenset({"controlling", "related"})
 DEFAULT_ROLE = "controlling"
+
+# How far two sources may drift before the difference is treated as legal
+# rather than cosmetic. "wilfully"/"willfully" and "in manner"/"in a manner"
+# fall well under this; a dropped qualifier such as "without a definite period"
+# does not.
+SIGNIFICANT = 0.06
+
+
+def divergence(a: str, b: str) -> float:
+    """0.0 when two texts say the same thing, 1.0 when unrelated.
+
+    The e-Library and lawphil transcribe the same statutes with small spelling
+    and punctuation differences. Those carry no legal weight. A changed
+    qualifier, a different provision number, or an added exception does.
+    """
+    left, right = _loose(a), _loose(b)
+    if not left or not right:
+        return 1.0
+    return 1.0 - difflib.SequenceMatcher(None, left, right).ratio()
+
+
+def _drift_from(quote: str, reference: str) -> float:
+    """How far `quote` drifts from the closest passage in `reference`.
+
+    Returns 0.0 when the passage is present (allowing for case and
+    punctuation), rising toward 1.0 as the texts diverge in substance.
+    """
+    loose_quote, loose_ref = _loose(quote), _loose(reference)
+    if not loose_quote or not loose_ref:
+        return 1.0
+    if loose_quote in loose_ref:
+        return 0.0
+
+    # Locate the closest region, then compare a same-length window against it
+    # so a short quote is not penalised for the length of the whole statute.
+    matcher = difflib.SequenceMatcher(None, loose_quote, loose_ref)
+    match = matcher.find_longest_match(0, len(loose_quote), 0, len(loose_ref))
+    start = max(0, match.b - match.a)
+    window = loose_ref[start : start + len(loose_quote)]
+    return divergence(loose_quote, window)
+
+
+def _loose(text: str) -> str:
+    """Lowercased, punctuation-stripped, whitespace-collapsed."""
+    return " ".join("".join(c if c.isalnum() else " " for c in text.lower()).split())
 
 
 class ValidationError(Exception):
@@ -71,10 +117,36 @@ def load_superseded(path) -> dict:
     }
 
 
+def load_elibrary(path) -> dict:
+    """The Supreme Court's own copy of each cited statute, keyed by doc id."""
+    path = pathlib.Path(path)
+    if not path.exists():
+        return {}
+    return json.loads(path.read_text(encoding="utf-8"))
+
+
+def build_parents(corpus_dir) -> dict:
+    """provision id -> its parent statute id, so a provision quote can be
+    checked against the whole statute as the e-Library publishes it."""
+    path = pathlib.Path(corpus_dir) / "provisions.json"
+    if not path.exists():
+        return {}
+    return {
+        p["id"]: p["doc_id"] for p in json.loads(path.read_text(encoding="utf-8"))
+    }
+
+
 def validate_item(
-    item: dict, index: dict, cutoff: datetime.date, superseded: dict | None = None
+    item: dict,
+    index: dict,
+    cutoff: datetime.date,
+    superseded: dict | None = None,
+    elibrary: dict | None = None,
+    parents: dict | None = None,
 ) -> None:
     superseded = superseded or {}
+    elibrary = elibrary or {}
+    parents = parents or {}
     item_id = item.get("id", "<no id>")
 
     def fail(message):
@@ -129,7 +201,40 @@ def validate_item(
         quote = _normalise(str(authority.get("quote", "")))
         if len(quote) < MIN_QUOTE_LENGTH:
             fail(f"quote for {doc_id} is too short to prove grounding: {quote!r}")
-        if quote not in _normalise(entry["text"]):
+
+        # PRIMARY SOURCE: the Supreme Court e-Library. The quote must appear
+        # verbatim in the Court's own text. Fail closed — if the Court's copy
+        # cannot be checked, the item does not ship.
+        if elibrary:
+            parent = parents.get(doc_id, doc_id)
+            source = elibrary.get(parent)
+            if source is None:
+                fail(
+                    f"no e-Library copy of {parent} is available, so the quote for "
+                    f"{doc_id} cannot be checked against the Court's own text"
+                )
+            if quote not in _normalise(source["text"]):
+                fail(
+                    f"quote for {doc_id} does not appear in the e-Library text of "
+                    f"{parent}: {quote[:60]!r}"
+                )
+
+        if elibrary:
+            # SECONDARY SOURCE: lawphil, held in the corpus. A cross-check, not
+            # a second authority. Spelling and punctuation drift between the two
+            # transcriptions carries no legal weight; a changed qualifier or a
+            # different provision does. Only the latter stops the item.
+            drift = _drift_from(quote, entry["text"])
+            if drift >= SIGNIFICANT:
+                fail(
+                    f"quote for {doc_id} diverges significantly from the secondary "
+                    f"source (lawphil): {drift:.0%} different. Check whether the two "
+                    f"texts state the same rule before shipping this."
+                )
+        elif quote not in _normalise(entry["text"]):
+            # No primary source loaded, so the corpus IS the source of record
+            # and exactness must hold against it. Never let a quote through
+            # unchecked just because the e-Library copy is missing.
             fail(
                 f"quote for {doc_id} was not found verbatim in the corpus: "
                 f"{quote[:60]!r}"
@@ -140,7 +245,7 @@ def role_of(authority: dict) -> str:
     return authority.get("role", DEFAULT_ROLE)
 
 
-def validate_bank(items, index, cutoff, superseded=None):
+def validate_bank(items, index, cutoff, superseded=None, elibrary=None, parents=None):
     """Return (valid_items, error_messages). Bad items are dropped, not fixed."""
     valid = []
     errors = []
@@ -152,7 +257,7 @@ def validate_bank(items, index, cutoff, superseded=None):
 
     for item in items:
         try:
-            validate_item(item, index, cutoff, superseded)
+            validate_item(item, index, cutoff, superseded, elibrary, parents)
         except ValidationError as exc:
             errors.append(str(exc))
             continue

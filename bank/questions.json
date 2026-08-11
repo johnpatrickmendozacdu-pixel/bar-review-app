@@ -30,7 +30,7 @@
    }
   ],
   "difficulty": 2,
-  "exceptions": "Art. 1592 applies to sales of immovable property; a sale of personalty on installments falls under Art. 1484 instead, where the remedies are alternative. If the lot is residential real estate sold on installments, the Maceda Law adds buyer protections on top of Art. 1592, including grace periods before cancellation, and it governs regardless of contrary stipulation."
+  "exceptions": "Art. 1592 applies to sales of immovable property; a sale of personalty on installments falls under Art. 1484 instead, where the remedies are alternative. Residential realty sold on installments is additionally governed by the Maceda Law, which grants grace periods before cancellation regardless of any contrary stipulation."
  },
  {
   "id": "q-civil-0002",
@@ -68,14 +68,14 @@
     "doc_id": "ra-386-art-21",
     "citation": "Civil Code, Art. 21",
     "role": "controlling",
-    "quote": "Any person who wilfully causes loss or injury to another in manner that is contrary to morals, good customs or public policy shall compensate the latter for the damage",
+    "quote": "Any person who willfully causes loss or injury to another in a manner that is contrary to morals, good customs or public policy shall compensate the latter for the damage",
     "source_url": "https://lawphil.net/statutes/repacts/ra1949/ra_386_1949.html"
    },
    {
     "doc_id": "ra-386-art-20",
     "citation": "Civil Code, Art. 20",
     "role": "related",
-    "quote": "Every person who, contrary to law, wilfully or negligently causes damage to another, shall indemnify the latter for the same",
+    "quote": "Every person who, contrary to law, willfully or negligently causes damage to another, shall indemnify the latter for the same",
     "source_url": "https://lawphil.net/statutes/repacts/ra1949/ra_386_1949.html"
    }
   ],
@@ -111,7 +111,7 @@
     "doc_id": "ra-386-art-1405",
     "citation": "Civil Code, Art. 1405",
     "role": "controlling",
-    "quote": "are ratified by the failure to object to the presentation of oral evidence to prove the same, or by the acceptance of benefit under them",
+    "quote": "are ratified by the failure to object to the presentation of oral evidence to prove the same, or by the acceptance of benefits under them",
     "source_url": "https://lawphil.net/statutes/repacts/ra1949/ra_386_1949.html"
    },
    {
@@ -259,31 +259,5 @@
    }
   ],
   "difficulty": 3
- },
- {
-  "id": "q-labor-0001",
-  "schema_version": 2,
-  "type": "hypothetical",
-  "subject": "labor",
-  "question": "Nena has been a regular employee for six years. Her employer dismisses her after she refuses a lawful instruction from her supervisor on one occasion, citing willful disobedience. No notice or hearing was given. Nena files an illegal dismissal complaint. Was the dismissal valid, and what is she entitled to?",
-  "answer_key": "It depends on whether the disobedience was truly willful and whether due process was observed, but on these facts the dismissal fails. Willful disobedience of a lawful order connected to the employee's work is a just cause, so the ground is available in principle. However, a single refusal is thin evidence of willfulness, and no notice or hearing was given at all. A regular employee may not be terminated except for just cause or an authorized cause, and an employee unjustly dismissed is entitled to reinstatement without loss of seniority rights and to full backwages. So: yes the employer may dismiss for willful disobedience if it is genuinely willful and procedural due process is observed; no on these facts, where neither is established.",
-  "exceptions": "The just causes are available only against the employee's own culpable acts; economic separations proceed instead under the authorized causes, with different notice and separation pay consequences. Where a just cause genuinely exists but procedural due process was not observed, the dismissal is not thereby void, and the consequence is limited to indemnity rather than reinstatement.",
-  "authorities": [
-   {
-    "doc_id": "pd-442-art-282",
-    "citation": "Labor Code, Art. 282",
-    "role": "controlling",
-    "quote": "An employer may terminate an employment for any of the following causes",
-    "source_url": "https://lawphil.net/statutes/presdecs/pd1974/pd_442_1974.html"
-   },
-   {
-    "doc_id": "pd-442-art-279",
-    "citation": "Labor Code, Art. 279",
-    "role": "related",
-    "quote": "An employee who is unjustly dismissed from work shall be entitled to reinstatement without loss of seniority rights",
-    "source_url": "https://lawphil.net/statutes/presdecs/pd1974/pd_442_1974.html"
-   }
-  ],
-  "difficulty": 2
  }
 ]

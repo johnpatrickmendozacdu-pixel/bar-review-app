@@ -28,6 +28,28 @@ superseded law as the present rule.**
 
 Do not use for: non-legal content, or corpus plumbing that makes no legal claim.
 
+## Source Precedence
+
+**The Supreme Court e-Library is the primary legal basis. lawphil is a
+secondary cross-reference.**
+
+Every quotation must appear verbatim in the Court's own text. If the e-Library
+copy of a document cannot be located, the item does not ship — fail closed.
+
+The two sources transcribe the same statutes with small differences:
+`wilfully` / `willfully`, `in manner` / `in a manner`, `benefit` / `benefits`.
+These carry no legal weight and are tolerated automatically.
+
+**Flag a divergence only when it changes the rule:** a different provision
+number, an added or dropped qualifier, altered scope. The e-Library's copy of
+PD 442 numbers the termination provision ART. 321 and reads "terminate an
+employment *without a definite period*" — that is a substantive difference from
+lawphil's Art. 282, and it stops the item.
+
+The validator measures this automatically and rejects anything past the
+threshold. When it does, read both texts before deciding — do not raise the
+threshold.
+
 ## The Five Checks
 
 Run all five on every item. A failure on any one means fix or delete — never

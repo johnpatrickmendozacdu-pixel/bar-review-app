@@ -334,3 +334,110 @@ def test_a_renumbered_provision_needs_no_replacement_but_must_be_flagged():
 
 def test_an_unflagged_provision_is_unaffected():
     validate_item(item_v2(), INDEX_S, CUTOFF, SUPERSEDED)
+
+
+from bank.validate import SIGNIFICANT
+
+ELIBRARY = {
+    "ra-386": {
+        "url": "https://elibrary.judiciary.gov.ph/thebookshelf/showdocs/2/53360",
+        "text": "ART. 20. Every person who, contrary to law, willfully or negligently causes damage to another, shall indemnify the latter for the same.",
+    }
+}
+
+PARENTS = {"ra-386-art-20": "ra-386", "ra-386-art-1191": "ra-386"}
+
+
+def el_item(quote):
+    base = item_v2()
+    base["authorities"] = [
+        {
+            "doc_id": "ra-386-art-20",
+            "citation": "Civil Code, Art. 20",
+            "role": "controlling",
+            "quote": quote,
+            "source_url": "https://lawphil.net/x",
+        }
+    ]
+    return base
+
+
+EL_INDEX = {
+    **INDEX,
+    "ra-386-art-20": {
+        # lawphil's spelling, which is what the corpus holds.
+        "text": "Every person who, contrary to law, wilfully or negligently causes damage to another. Every person who, contrary to law, willfully or negligently causes damage to another",
+        "promulgation_date": datetime.date(1949, 6, 18),
+    },
+}
+
+
+def test_a_quote_matching_lawphil_but_not_the_elibrary_is_rejected():
+    """lawphil writes 'wilfully'; the Court's own copy writes 'willfully'.
+    The e-Library is authoritative, so the lawphil spelling must fail."""
+    bad = el_item("contrary to law, wilfully or negligently causes damage to another")
+    with pytest.raises(ValidationError, match="e-Library"):
+        validate_item(bad, EL_INDEX, CUTOFF, None, ELIBRARY, PARENTS)
+
+
+def test_a_quote_matching_the_elibrary_passes():
+    ok = el_item("contrary to law, willfully or negligently causes damage to another")
+    validate_item(ok, EL_INDEX, CUTOFF, None, ELIBRARY, PARENTS)
+
+
+def test_an_authority_with_no_elibrary_copy_fails_closed():
+    """If the Court's copy cannot be checked, the item does not ship."""
+    orphan = el_item("contrary to law, willfully or negligently causes damage to another")
+    orphan["authorities"][0]["doc_id"] = "ra-6552-sec-3"
+    index = {**EL_INDEX, "ra-6552-sec-3": {"text": "contrary to law, willfully or negligently causes damage to another", "promulgation_date": datetime.date(1972, 8, 26)}}
+    with pytest.raises(ValidationError, match="no e-Library"):
+        validate_item(orphan, index, CUTOFF, None, ELIBRARY, {"ra-6552-sec-3": "ra-6552"})
+
+
+def test_elibrary_checking_is_skipped_when_no_registry_is_supplied():
+    """Existing callers that pass no e-Library data keep working."""
+    validate_item(item_v2(), INDEX, CUTOFF)
+
+
+def test_insignificant_spelling_difference_between_sources_is_tolerated():
+    """lawphil writes 'wilfully', the Court writes 'willfully'. Same premise."""
+    from bank.validate import divergence
+
+    assert divergence(
+        "contrary to law, wilfully or negligently causes damage to another",
+        "contrary to law, willfully or negligently causes damage to another",
+    ) < SIGNIFICANT
+
+
+def test_article_in_a_manner_variation_is_tolerated():
+    from bank.validate import divergence
+
+    assert divergence(
+        "loss or injury to another in manner that is contrary to morals",
+        "loss or injury to another in a manner that is contrary to morals",
+    ) < SIGNIFICANT
+
+
+def test_a_changed_qualifier_is_significant():
+    """'without a definite period' narrows the rule. That is not cosmetic."""
+    from bank.validate import divergence
+
+    assert divergence(
+        "An employer may terminate an employment for any of the following just causes",
+        "An employer may terminate an employment without a definite period for any of the following just causes",
+    ) >= SIGNIFICANT
+
+
+def test_a_different_provision_entirely_is_significant():
+    from bank.validate import divergence
+
+    assert divergence(
+        "The power to rescind obligations is implied in reciprocal ones",
+        "Every person must act with justice and observe honesty and good faith",
+    ) >= SIGNIFICANT
+
+
+def test_quote_is_checked_against_the_elibrary_as_primary():
+    """The Court's wording governs, even where lawphil differs."""
+    ok = el_item("contrary to law, willfully or negligently causes damage to another")
+    validate_item(ok, EL_INDEX, CUTOFF, None, ELIBRARY, PARENTS)
