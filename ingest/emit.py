@@ -7,6 +7,7 @@ import pathlib
 
 from ingest import config
 from ingest.schema import Document
+from ingest.shards import read_cases, write_cases
 
 
 class ShrinkError(RuntimeError):
@@ -26,11 +27,12 @@ def _load_previous_total(out_dir: pathlib.Path) -> int:
 def _load_existing(out_dir: pathlib.Path) -> dict:
     """Everything already downloaded, keyed by id."""
     stored = {}
-    for name in ("statute.json", "case.json"):
-        path = out_dir / name
-        if path.exists():
-            for doc in json.loads(path.read_text(encoding="utf-8")):
-                stored[doc["id"]] = doc
+    path = out_dir / "statute.json"
+    if path.exists():
+        for doc in json.loads(path.read_text(encoding="utf-8")):
+            stored[doc["id"]] = doc
+    for doc in read_cases(out_dir):
+        stored[doc["id"]] = doc
     return stored
 
 
@@ -76,6 +78,10 @@ def emit(documents: list[Document], out_dir: pathlib.Path, merge: bool = False) 
         by_type[doc["type"]].append(doc)
 
     for doc_type, docs in by_type.items():
+        if doc_type == "case":
+            # Sharded by year so a two-hourly commit rewrites only what changed.
+            write_cases(out_dir, docs)
+            continue
         (out_dir / f"{doc_type}.json").write_text(
             json.dumps(docs, indent=1, ensure_ascii=False), encoding="utf-8"
         )

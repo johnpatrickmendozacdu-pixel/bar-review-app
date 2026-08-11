@@ -44,13 +44,15 @@ CLOSE_QUOTES = "”’\""
 
 
 def load_case(doc_id: str) -> dict | None:
-    for name in ("case.json", "statute.json"):
-        path = pathlib.Path("corpus", name)
-        if not path.exists():
-            continue
-        for doc in json.loads(path.read_text(encoding="utf-8")):
-            if doc["id"] == doc_id:
-                return doc
+    from ingest.shards import read_cases
+
+    docs = list(read_cases("corpus"))
+    path = pathlib.Path("corpus/statute.json")
+    if path.exists():
+        docs.extend(json.loads(path.read_text(encoding="utf-8")))
+    for doc in docs:
+        if doc["id"] == doc_id:
+            return doc
     return None
 
 

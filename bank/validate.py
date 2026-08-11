@@ -10,6 +10,8 @@ import difflib
 import json
 import pathlib
 
+from ingest.shards import read_cases
+
 TYPES = frozenset({"hypothetical", "issue_spotting", "essay", "doctrine"})
 SUBJECTS = frozenset(
     {"remedial", "civil", "commercial_tax", "political", "labor", "criminal"}
@@ -85,11 +87,12 @@ def build_index(corpus_dir) -> dict:
     """Map every document and provision id to its text and date."""
     corpus_dir = pathlib.Path(corpus_dir)
     index = {}
-    for name in ("statute.json", "case.json", "provisions.json"):
+    docs = list(read_cases(corpus_dir))
+    for name in ("statute.json", "provisions.json"):
         path = corpus_dir / name
-        if not path.exists():
-            continue
-        for doc in json.loads(path.read_text(encoding="utf-8")):
+        if path.exists():
+            docs.extend(json.loads(path.read_text(encoding="utf-8")))
+    for doc in docs:
             index[doc["id"]] = {
                 "text": doc["text"],
                 "promulgation_date": datetime.date.fromisoformat(
@@ -143,15 +146,14 @@ def elibrary_sources(statutes: dict, cases: list) -> dict:
 
 
 def load_cases(corpus_dir) -> list:
-    path = pathlib.Path(corpus_dir) / "case.json"
-    return json.loads(path.read_text(encoding="utf-8")) if path.exists() else []
+    return read_cases(corpus_dir)
 
 
 def build_source_urls(corpus_dir) -> dict:
     """doc id -> the URL the corpus actually recorded for it."""
     corpus_dir = pathlib.Path(corpus_dir)
-    urls = {}
-    for name in ("statute.json", "case.json", "provisions.json"):
+    urls = {doc["id"]: doc["source_url"] for doc in read_cases(corpus_dir)}
+    for name in ("statute.json", "provisions.json"):
         path = corpus_dir / name
         if path.exists():
             for doc in json.loads(path.read_text(encoding="utf-8")):

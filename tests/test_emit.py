@@ -24,9 +24,11 @@ def make_docs(n, type_="statute"):
 
 
 def test_writes_one_shard_per_type(tmp_path):
+    """Statutes go to one file; cases are sharded by year so a two-hourly
+    commit rewrites only the years it touched."""
     emit(make_docs(3, "statute") + make_docs(2, "case"), tmp_path)
     assert (tmp_path / "statute.json").exists()
-    assert (tmp_path / "case.json").exists()
+    assert (tmp_path / "cases" / "2020.json").exists()
 
 
 def test_manifest_records_counts(tmp_path):
