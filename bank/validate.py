@@ -53,7 +53,28 @@ def build_index(corpus_dir) -> dict:
     return index
 
 
-def validate_item(item: dict, index: dict, cutoff: datetime.date) -> None:
+def load_superseded(path) -> dict:
+    """Provisions whose corpus text is no longer current.
+
+    The corpus holds ORIGINAL enacted texts, so a verbatim quote can still be
+    superseded law — the RPC's estafa amounts read as they did in 1930. This
+    registry is the mechanical half of currency checking; the judgment half
+    lives in the verifying-legal-currency skill.
+    """
+    path = pathlib.Path(path)
+    if not path.exists():
+        return {}
+    return {
+        k: v
+        for k, v in json.loads(path.read_text(encoding="utf-8")).items()
+        if not k.startswith("_")
+    }
+
+
+def validate_item(
+    item: dict, index: dict, cutoff: datetime.date, superseded: dict | None = None
+) -> None:
+    superseded = superseded or {}
     item_id = item.get("id", "<no id>")
 
     def fail(message):
@@ -93,6 +114,18 @@ def validate_item(item: dict, index: dict, cutoff: datetime.date) -> None:
                 f"after the coverage cut-off {cutoff}"
             )
 
+        # Currency: quoting amended law verbatim still misstates the law.
+        flagged = superseded.get(doc_id)
+        if flagged and role_of(authority) == DEFAULT_ROLE:
+            required = flagged.get("replaced_by") or []
+            cited = {a.get("doc_id") for a in authorities}
+            missing = [r for r in required if r not in cited]
+            if missing:
+                fail(
+                    f"{doc_id} is superseded ({flagged['reason']}) and the item does "
+                    f"not cite what replaced it: {missing}"
+                )
+
         quote = _normalise(str(authority.get("quote", "")))
         if len(quote) < MIN_QUOTE_LENGTH:
             fail(f"quote for {doc_id} is too short to prove grounding: {quote!r}")
@@ -103,7 +136,11 @@ def validate_item(item: dict, index: dict, cutoff: datetime.date) -> None:
             )
 
 
-def validate_bank(items, index, cutoff):
+def role_of(authority: dict) -> str:
+    return authority.get("role", DEFAULT_ROLE)
+
+
+def validate_bank(items, index, cutoff, superseded=None):
     """Return (valid_items, error_messages). Bad items are dropped, not fixed."""
     valid = []
     errors = []
@@ -115,7 +152,7 @@ def validate_bank(items, index, cutoff):
 
     for item in items:
         try:
-            validate_item(item, index, cutoff)
+            validate_item(item, index, cutoff, superseded)
         except ValidationError as exc:
             errors.append(str(exc))
             continue

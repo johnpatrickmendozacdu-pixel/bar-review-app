@@ -93,5 +93,19 @@
   "subject": "criminal",
   "note": "Anti-VAWC Act",
   "short": "RA 9262"
+ },
+ {
+  "url": "https://lawphil.net/statutes/repacts/ra2017/ra_10951_2017.html",
+  "source": "lawphil",
+  "subject": "criminal",
+  "note": "Adjusts RPC penalty amounts",
+  "short": "RA 10951"
+ },
+ {
+  "url": "https://lawphil.net/statutes/repacts/ra1972/ra_6552_1972.html",
+  "source": "lawphil",
+  "subject": "civil",
+  "note": "Maceda Law - realty installment buyer protection",
+  "short": "Maceda Law"
  }
 ]

@@ -1,0 +1,15 @@
+{
+ "_comment": "Provisions and documents whose corpus text is NO LONGER CURRENT. The corpus holds original enacted texts, so a verbatim quote can still be superseded law. An item citing any of these as a controlling authority must ALSO cite the replacing authority, or it is rejected. Add an entry the moment you discover an amendment.",
+ "act-3815-art-315": {
+  "reason": "Estafa peso thresholds amended by RA 10951 (2017). Corpus text shows the original 1930 amounts.",
+  "replaced_by": ["ra-10951"]
+ },
+ "pd-442-art-279": {
+  "reason": "Renumbered to Art. 294 by DOLE Department Advisory No. 01-15 (2015). Substance retained.",
+  "replaced_by": []
+ },
+ "pd-442-art-282": {
+  "reason": "Renumbered to Art. 297 by DOLE Department Advisory No. 01-15 (2015). Substance retained.",
+  "replaced_by": []
+ }
+}

@@ -259,3 +259,78 @@ def test_an_item_with_only_related_authorities_is_rejected():
 
 def test_exceptions_may_be_empty_when_there_genuinely_are_none():
     validate_item(item_v2(exceptions=""), INDEX, CUTOFF)
+
+
+SUPERSEDED = {
+    "act-3815-art-315": {"reason": "Amounts amended by RA 10951.", "replaced_by": ["ra-10951"]},
+    "pd-442-art-279": {"reason": "Renumbered to Art. 294.", "replaced_by": []},
+}
+
+INDEX_S = {
+    **INDEX,
+    "act-3815-art-315": {
+        "text": "Any person who shall defraud another by any of the means mentioned hereinbelow shall be punished by",
+        "promulgation_date": datetime.date(1930, 12, 8),
+    },
+    "ra-10951": {
+        "text": "An Act adjusting the amount or the value of property and damage on which a penalty is based",
+        "promulgation_date": datetime.date(2017, 8, 29),
+    },
+    "pd-442-art-279": {
+        "text": "An employee who is unjustly dismissed from work shall be entitled to reinstatement",
+        "promulgation_date": datetime.date(1974, 5, 1),
+    },
+}
+
+
+def superseded_item(**overrides):
+    base = item_v2()
+    base["authorities"] = [
+        {
+            "doc_id": "act-3815-art-315",
+            "citation": "Revised Penal Code, Art. 315",
+            "role": "controlling",
+            "quote": "Any person who shall defraud another by any of the means mentioned hereinbelow",
+            "source_url": "https://lawphil.net/x",
+        }
+    ]
+    base.update(overrides)
+    return base
+
+
+def test_citing_a_superseded_provision_alone_is_rejected():
+    """A verbatim quote of amended law is still amended law."""
+    with pytest.raises(ValidationError, match="superseded"):
+        validate_item(superseded_item(), INDEX_S, CUTOFF, SUPERSEDED)
+
+
+def test_citing_the_superseded_provision_with_its_replacement_is_allowed():
+    ok = superseded_item()
+    ok["authorities"].append(
+        {
+            "doc_id": "ra-10951",
+            "citation": "Republic Act No. 10951",
+            "role": "related",
+            "quote": "An Act adjusting the amount or the value of property and damage on which a penalty is based",
+            "source_url": "https://lawphil.net/y",
+        }
+    )
+    validate_item(ok, INDEX_S, CUTOFF, SUPERSEDED)
+
+
+def test_a_renumbered_provision_needs_no_replacement_but_must_be_flagged():
+    """Renumbering keeps the substance, so an empty replaced_by list means the
+    item may ship — the flag exists so the author knows to mention the number."""
+    renamed = superseded_item()
+    renamed["authorities"][0] = {
+        "doc_id": "pd-442-art-279",
+        "citation": "Labor Code, Art. 279",
+        "role": "controlling",
+        "quote": "An employee who is unjustly dismissed from work shall be entitled to reinstatement",
+        "source_url": "https://lawphil.net/z",
+    }
+    validate_item(renamed, INDEX_S, CUTOFF, SUPERSEDED)
+
+
+def test_an_unflagged_provision_is_unaffected():
+    validate_item(item_v2(), INDEX_S, CUTOFF, SUPERSEDED)

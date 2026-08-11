@@ -1,20 +1,36 @@
 [
  {
   "id": "q-civil-0001",
-  "schema_version": 1,
+  "schema_version": 2,
   "type": "hypothetical",
   "subject": "civil",
   "question": "Ana agreed to sell her lot to Ben for two million pesos, payable in four equal installments. Ben paid the first two installments on time, then stopped paying without explanation and ignored Ana's demands. Ana now wants to be released from the contract entirely, and she also wants to be compensated for the eight months she lost waiting. May Ana rescind the contract and still recover damages, or must she choose one remedy or the other?",
-  "answer_key": "She may do both. In reciprocal obligations, the power to rescind is implied when one party fails to perform. The injured party chooses between demanding fulfillment and rescinding, and damages are recoverable whichever she chooses. So rescission and damages are not alternatives here. Note also that rescission under this article is properly resolution for breach, which is different from the rescission of lesion or fraud under Art. 1381.",
+  "answer_key": "Both, but not under Art. 1191 alone. Because the object is a lot, this is a sale of immovable property, and Art. 1592 governs the mechanics of rescission: even with a stipulation that rescission takes place of right on failure to pay, the buyer may still pay until a judicial or notarial demand for rescission has been made on him. So Ana must first make that demand; she cannot simply treat the contract as cancelled. Once demand is properly made, the reciprocal-obligations rule supplies her remedies: she chooses between fulfillment and rescission, and damages are recoverable in either case. So yes to both remedies, but only after judicial or notarial demand.",
   "authorities": [
+   {
+    "doc_id": "ra-386-art-1592",
+    "citation": "Civil Code, Art. 1592",
+    "role": "controlling",
+    "quote": "In the sale of immovable property, even though it may have been stipulated that upon failure to pay the price at the time agreed upon the rescission of the contract shall of right take place, the vendee may pay, even after the expiration of the period, as long as no demand for rescission",
+    "source_url": "https://lawphil.net/statutes/repacts/ra1949/ra_386_1949.html"
+   },
    {
     "doc_id": "ra-386-art-1191",
     "citation": "Civil Code, Art. 1191",
+    "role": "related",
     "quote": "The injured party may choose between the fulfillment and the rescission of the obligation, with the payment of damages in either case",
     "source_url": "https://lawphil.net/statutes/repacts/ra1949/ra_386_1949.html"
+   },
+   {
+    "doc_id": "ra-6552-sec-3",
+    "citation": "Maceda Law, Sec. 3",
+    "role": "related",
+    "quote": "In all transactions or contracts involving the sale or financing of real estate on installment payments",
+    "source_url": "https://lawphil.net/statutes/repacts/ra1972/ra_6552_1972.html"
    }
   ],
-  "difficulty": 2
+  "difficulty": 2,
+  "exceptions": "Art. 1592 applies to sales of immovable property; a sale of personalty on installments falls under Art. 1484 instead, where the remedies are alternative. If the lot is residential real estate sold on installments, the Maceda Law adds buyer protections on top of Art. 1592, including grace periods before cancellation, and it governs regardless of contrary stipulation."
  },
  {
   "id": "q-civil-0002",
@@ -35,20 +51,36 @@
  },
  {
   "id": "q-civil-0003",
-  "schema_version": 1,
+  "schema_version": 2,
   "type": "hypothetical",
   "subject": "civil",
   "question": "A bank legally forecloses on a borrower's property. Everything the bank does is within its contractual rights, but it deliberately schedules the public auction on the morning of the borrower's daughter's wedding, and posts notices on the family's gate, purely to humiliate them. The borrower sues for damages. The bank's defense is that it violated no specific provision of law. Does the borrower have a cause of action?",
-  "answer_key": "Yes. A right exercised purely to injure another is an abuse of right. Every person must exercise rights and perform duties with justice, honesty and good faith, and this standard governs even conduct that is otherwise lawful. The bank's timing and manner, calculated to humiliate rather than to collect, breaches that standard and grounds an action for damages.",
+  "answer_key": "Yes, but not on Art. 19 standing alone. Art. 19 sets the standard: every person must act with justice, give everyone his due, and observe honesty and good faith in exercising rights and performing duties. Art. 19 states the norm; it does not by itself create the action. The cause of action arises from Art. 19 read with Art. 20, where the damage is caused contrary to law wilfully or negligently, or with Art. 21, where the act is contrary to morals, good customs or public policy. The bank's conduct was lawful in form but calculated to humiliate, which fits Art. 21. So the borrower recovers under Art. 19 in relation to Art. 21.",
   "authorities": [
    {
     "doc_id": "ra-386-art-19",
     "citation": "Civil Code, Art. 19",
+    "role": "controlling",
     "quote": "act with justice, give everyone his due, and observe honesty and good faith",
+    "source_url": "https://lawphil.net/statutes/repacts/ra1949/ra_386_1949.html"
+   },
+   {
+    "doc_id": "ra-386-art-21",
+    "citation": "Civil Code, Art. 21",
+    "role": "controlling",
+    "quote": "Any person who wilfully causes loss or injury to another in manner that is contrary to morals, good customs or public policy shall compensate the latter for the damage",
+    "source_url": "https://lawphil.net/statutes/repacts/ra1949/ra_386_1949.html"
+   },
+   {
+    "doc_id": "ra-386-art-20",
+    "citation": "Civil Code, Art. 20",
+    "role": "related",
+    "quote": "Every person who, contrary to law, wilfully or negligently causes damage to another, shall indemnify the latter for the same",
     "source_url": "https://lawphil.net/statutes/repacts/ra1949/ra_386_1949.html"
    }
   ],
-  "difficulty": 2
+  "difficulty": 2,
+  "exceptions": "Art. 20 requires that the act be contrary to law; where the conduct breaches no legal provision, Art. 21 is the correct pairing because it reaches acts that are lawful but contrary to morals, good customs or public policy. Abuse of right also requires that the right be exercised with the purpose of prejudicing another; a lawful right exercised in good faith, even harshly, does not give rise to liability."
  },
  {
   "id": "q-civil-0004",
@@ -69,20 +101,29 @@
  },
  {
   "id": "q-civil-0005",
-  "schema_version": 1,
+  "schema_version": 2,
   "type": "hypothetical",
   "subject": "civil",
   "question": "Elena orally agreed to sell her farmland to Fidel. Nothing was written down. Fidel later sues to compel Elena to transfer the land, and Elena moves to dismiss on the ground that the agreement is unwritten. During trial, however, Elena's counsel fails to object when Fidel testifies at length about the terms of their oral agreement. Can Elena still rely on the absence of writing?",
-  "answer_key": "No. Contracts falling under the Statute of Frauds are unenforceable, but the defect is curable: such contracts bind once ratified. Failing to object to evidence of the oral agreement ratifies it and waives the defense. The contract was never void, only unenforceable, which is precisely why ratification can save it.",
+  "answer_key": "No. The agreement is unenforceable, not void, and unenforceable contracts bind once ratified. Art. 1405 states the specific mode: contracts infringing the Statute of Frauds are ratified by the failure to object to the presentation of oral evidence to prove them, or by acceptance of benefit under them. Elena's counsel let Fidel testify to the oral terms without objection, which ratifies the contract and waives the defense.",
   "authorities": [
+   {
+    "doc_id": "ra-386-art-1405",
+    "citation": "Civil Code, Art. 1405",
+    "role": "controlling",
+    "quote": "are ratified by the failure to object to the presentation of oral evidence to prove the same, or by the acceptance of benefit under them",
+    "source_url": "https://lawphil.net/statutes/repacts/ra1949/ra_386_1949.html"
+   },
    {
     "doc_id": "ra-386-art-1403",
     "citation": "Civil Code, Art. 1403",
+    "role": "related",
     "quote": "The following contracts are unenforceable, unless they are ratified",
     "source_url": "https://lawphil.net/statutes/repacts/ra1949/ra_386_1949.html"
    }
   ],
-  "difficulty": 3
+  "difficulty": 3,
+  "exceptions": "The Statute of Frauds applies only to executory contracts. Where the contract has been partly or fully performed, the statute does not apply at all and no ratification question arises. Ratification also occurs by acceptance of benefit under the contract, independently of any failure to object."
  },
  {
   "id": "q-criminal-0001",
@@ -117,23 +158,6 @@
    }
   ],
   "difficulty": 1
- },
- {
-  "id": "q-criminal-0003",
-  "schema_version": 1,
-  "type": "issue_spotting",
-  "subject": "criminal",
-  "question": "Ida collects money from neighbours for a lending venture that does not exist, promising monthly returns. She spends the money on herself. When one neighbour demands a refund, Ida issues a check knowing her account is closed. She then tells the neighbour that a barangay official will jail her if she complains. Identify the criminal law issues raised by these facts.",
-  "answer_key": "At least three. First, estafa by deceit: she defrauded the neighbours through a fictitious venture, and the law punishes any person who defrauds another by the enumerated means. Second, a separate issue arises from issuing a check drawn on a closed account, which raises both estafa by postdating or issuing a worthless check and a possible violation of the bouncing checks law. Third, the threat of jail raises grave threats, and the invocation of a barangay official may raise a separate issue of usurpation of authority depending on how it was made.",
-  "authorities": [
-   {
-    "doc_id": "act-3815-art-315",
-    "citation": "Revised Penal Code, Art. 315",
-    "quote": "Any person who shall defraud another by any of the means mentioned hereinbelow shall be punished by",
-    "source_url": "https://lawphil.net/statutes/acts/act1930/act_3815_1930.html"
-   }
-  ],
-  "difficulty": 3
  },
  {
   "id": "q-commercial_tax-0001",
@@ -209,8 +233,8 @@
   "type": "hypothetical",
   "subject": "civil",
   "question": "Marites sells a delivery van to Rico for six hundred thousand pesos, payable in twelve monthly installments, with a chattel mortgage over the van. Rico misses the fourth and fifth installments. Marites forecloses the chattel mortgage, sells the van at auction for four hundred thousand, and now sues Rico for the two hundred thousand shortfall. Rico argues she cannot collect the balance. Who is correct, and would your answer change if the object sold had been a parcel of land?",
-  "answer_key": "Rico is correct on these facts. The sale is of personal property payable in installments, so the seller's remedies are alternative, not cumulative: exact fulfillment, cancel the sale on default covering two or more installments, or foreclose the chattel mortgage. Having chosen foreclosure, Marites is barred from further recovery of the unpaid balance. Yes, the answer changes if the object were land: Art. 1484 governs only personal property, so a sale of realty falls back on the general rule for reciprocal obligations, where the injured party chooses between fulfillment and rescission and recovers damages either way.",
-  "exceptions": "Art. 1484 applies only to a sale of personal property payable in installments. Cancellation requires default covering two or more installments, so a single missed installment does not trigger that remedy. Where the object is real property, or the sale is not on installments, the general regime for reciprocal obligations applies instead and the bar on recovering a deficiency does not arise.",
+  "answer_key": "Rico is correct on these facts. The sale is of personal property payable in installments, so the seller's remedies are alternative, not cumulative: exact fulfillment, cancel the sale on default covering two or more installments, or foreclose the chattel mortgage. Having chosen foreclosure, Marites is barred from further recovery of the unpaid balance. Yes, the answer changes if the object were land. Art. 1484 governs only personal property. A sale of immovable falls under Art. 1592, where the buyer may still pay until judicial or notarial demand for rescission is made, and if it is residential realty on installments the Maceda Law adds grace periods before cancellation.",
+  "exceptions": "Art. 1484 applies only to a sale of personal property payable in installments. Cancellation requires default covering two or more installments, so a single missed installment does not trigger it. Where the object is immovable, Art. 1592 governs instead and requires judicial or notarial demand; residential realty sold on installments is further protected by the Maceda Law.",
   "authorities": [
    {
     "doc_id": "ra-386-art-1484",
@@ -224,6 +248,13 @@
     "citation": "Civil Code, Art. 1191",
     "role": "related",
     "quote": "The injured party may choose between the fulfillment and the rescission of the obligation, with the payment of damages in either case",
+    "source_url": "https://lawphil.net/statutes/repacts/ra1949/ra_386_1949.html"
+   },
+   {
+    "doc_id": "ra-386-art-1592",
+    "citation": "Civil Code, Art. 1592",
+    "role": "related",
+    "quote": "In the sale of immovable property, even though it may have been stipulated that upon failure to pay the price at the time agreed upon the rescission of the contract shall of right take place",
     "source_url": "https://lawphil.net/statutes/repacts/ra1949/ra_386_1949.html"
    }
   ],
