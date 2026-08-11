@@ -1,10 +1,10 @@
 {
  "schema_version": 1,
- "generated_at": "2026-08-09T19:50:08.178544+00:00",
+ "generated_at": "2026-08-10T08:10:33.467182+00:00",
  "coverage_date": "2025-06-30",
  "counts": {
   "statute": 4,
-  "case": 1
+  "case": 15
  },
- "total": 5
+ "total": 19
 }
