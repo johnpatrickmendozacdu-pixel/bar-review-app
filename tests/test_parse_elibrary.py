@@ -65,3 +65,28 @@ def test_gr_number_without_a_date_raises():
 def test_title_has_no_broken_html_artifacts(doc):
     """The e-Library's own markup contains a malformed <BR> inside the title."""
     assert "BR>" not in doc.title
+
+
+def _case(docket, date="June 11, 2025"):
+    return (
+        f"<html><title>{docket} - ALPHA VS. BETA D E C I S I O N</title><body>"
+        f"<p>[ {docket}, {date} ]</p><p>" + ("Ruling text. " * 200) + "</p></body></html>"
+    )
+
+
+def test_administrative_matter_id_uses_the_whole_docket():
+    """A.M. dockets start with a YEAR (93-2-1011-RTC). Taking the first number
+    collapses every 1993 administrative matter onto the same id."""
+    doc = parse_case(_case("A.M. No. 93-2-1011-RTC"), URL)
+    assert doc.id == "am-93-2-1011-rtc"
+
+
+def test_two_administrative_matters_from_one_year_get_distinct_ids():
+    a = parse_case(_case("A.M. No. 93-2-1011-RTC"), URL)
+    b = parse_case(_case("A.M. No. 93-7-696-0"), URL)
+    assert a.id != b.id
+
+
+def test_gr_ids_are_unchanged_by_the_docket_fix():
+    doc = parse_case(_case("G.R. No. 279692"), URL)
+    assert doc.id == "gr-279692"

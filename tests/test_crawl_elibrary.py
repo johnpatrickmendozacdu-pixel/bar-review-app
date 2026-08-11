@@ -114,3 +114,17 @@ def test_a_missing_month_page_does_not_abort_the_crawl():
     }
     urls = crawl_decision_urls(StubFetcher(pages), CUTOFF, years_back=1, limit=10)
     assert len(urls) == 1, "June 404s; May must still be collected"
+
+
+def test_months_can_be_walked_oldest_first():
+    """Older months hold far more decisions (Mar 1998: 86, Jun 2005: 166) than
+    recent ones, so crawling from the dense end reaches a target count in a
+    fraction of the requests."""
+    months = months_until(CUTOFF, years_back=3, oldest_first=True)
+    assert months[0] == (2022, 7)
+    assert months[-1] == (2025, 6)
+
+
+def test_oldest_first_still_excludes_post_cutoff_months():
+    months = months_until(CUTOFF, years_back=3, oldest_first=True)
+    assert (2025, 7) not in months

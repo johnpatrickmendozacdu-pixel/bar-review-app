@@ -197,3 +197,65 @@ def test_build_index_reads_the_real_corpus(tmp_path):
     assert "ra-1" in index
     assert "ra-1-art-1" in index
     assert index["ra-1"]["promulgation_date"] == datetime.date(1949, 6, 18)
+
+
+def item_v2(**overrides):
+    base = item()
+    base["schema_version"] = 2
+    base["exceptions"] = "Art. 1484 governs instead for installment sales of personalty."
+    base["authorities"][0]["role"] = "controlling"
+    base.update(overrides)
+    return base
+
+
+def test_a_v2_item_with_roles_passes():
+    validate_item(item_v2(), INDEX, CUTOFF)
+
+
+def test_a_related_authority_is_validated_exactly_like_a_controlling_one():
+    """A 'similar case' carries the same guarantee: real document, real quote."""
+    bad = item_v2()
+    bad["authorities"].append(
+        {
+            "doc_id": "gr-279692",
+            "citation": "G.R. No. 279692",
+            "quote": "This sentence was never written by any court anywhere",
+            "source_url": "https://elibrary.judiciary.gov.ph/x",
+            "role": "related",
+        }
+    )
+    with pytest.raises(ValidationError, match="not found verbatim"):
+        validate_item(bad, INDEX, CUTOFF)
+
+
+def test_a_valid_related_authority_is_accepted():
+    ok = item_v2()
+    ok["authorities"].append(
+        {
+            "doc_id": "gr-279692",
+            "citation": "G.R. No. 279692",
+            "quote": "The writ of habeas corpus extends to all cases of illegal confinement",
+            "source_url": "https://elibrary.judiciary.gov.ph/x",
+            "role": "related",
+        }
+    )
+    validate_item(ok, INDEX, CUTOFF)
+
+
+def test_an_unknown_role_is_rejected():
+    bad = item_v2()
+    bad["authorities"][0]["role"] = "vaguely_relevant"
+    with pytest.raises(ValidationError, match="role"):
+        validate_item(bad, INDEX, CUTOFF)
+
+
+def test_an_item_with_only_related_authorities_is_rejected():
+    """Something must actually govern the answer."""
+    bad = item_v2()
+    bad["authorities"][0]["role"] = "related"
+    with pytest.raises(ValidationError, match="controlling"):
+        validate_item(bad, INDEX, CUTOFF)
+
+
+def test_exceptions_may_be_empty_when_there_genuinely_are_none():
+    validate_item(item_v2(exceptions=""), INDEX, CUTOFF)

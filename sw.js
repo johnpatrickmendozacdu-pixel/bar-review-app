@@ -1,14 +1,21 @@
 // Offline support. Cache the shell and the corpus so drills work on a plane.
 // Bump CACHE when app files change, so browsers pick up the new version.
-const CACHE = "barrev-v1";
+const CACHE = "barrev-v3";
 
+// Precache only what the app needs to start. corpus/provisions.json is
+// several megabytes and is fetched lazily when Search is opened; corpus
+// cases are never sent to the browser at all.
 const SHELL = [
   "./",
   "./index.html",
   "./app/app.js",
   "./app/sm2.js",
+  "./app/store.js",
+  "./app/session.js",
+  "./app/progress.js",
+  "./app/render.js",
   "./app/style.css",
-  "./corpus/provisions.json",
+  "./bank/questions.json",
   "./corpus/manifest.json",
 ];
 

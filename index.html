@@ -15,7 +15,6 @@
 <header>
   <button id="nav-home" class="link" type="button">Bar Review</button>
   <nav>
-    <button id="nav-progress" class="link" type="button">My progress</button>
     <button id="nav-library" class="link" type="button">Search the law</button>
     <button id="nav-settings" class="link" type="button">Settings</button>
   </nav>
@@ -26,9 +25,10 @@
   <section id="home" class="screen">
     <p id="status" class="status">Loading&hellip;</p>
     <button id="start" class="big" type="button">Start today's review</button>
-    <p id="countdown" class="quiet"></p>
-    <button id="pick" class="link" type="button">Choose a subject instead</button>
-    <div id="picker" hidden></div>
+    <p id="scoreline" class="quiet"></p>
+
+    <h2 class="section-heading">Or pick one subject</h2>
+    <div id="picker"></div>
   </section>
 
   <section id="session" class="screen" hidden>
@@ -40,15 +40,29 @@
       <p id="q-call"></p>
 
       <div id="answer" hidden>
-        <h2 class="answer-heading">Answer key</h2>
+        <h2 class="answer-heading">Answer</h2>
         <p id="q-answer" class="legal"></p>
-        <p class="aid-note">This explanation is a study aid. The quoted law below is the authority.</p>
-        <div id="authorities"></div>
-        <p class="verified">Every quotation above was checked against the official text before this question shipped &middot; law as of 30 June 2025</p>
+
+        <div id="exceptions-block" hidden>
+          <h3 class="sub-heading">Exceptions and qualifications</h3>
+          <p id="q-exceptions" class="legal"></p>
+        </div>
+
+        <div id="controlling-block" hidden>
+          <h3 class="sub-heading">The law that governs</h3>
+          <div id="controlling"></div>
+        </div>
+
+        <div id="related-block" hidden>
+          <h3 class="sub-heading">Related cases</h3>
+          <div id="related"></div>
+        </div>
+
+        <p class="verified">Every quotation was checked word-for-word against the official text before this question shipped. Law as of 30 June 2025.</p>
       </div>
     </article>
 
-    <button id="reveal" class="big" type="button">Show the answer key</button>
+    <button id="reveal" class="big" type="button">Show the answer</button>
 
     <div id="grading" hidden>
       <p class="grade-prompt">Did you get it right?</p>
@@ -62,17 +76,6 @@
     </div>
 
     <button id="end" class="link" type="button">End this session</button>
-  </section>
-
-  <section id="done" class="screen" hidden>
-    <h2>Session finished</h2>
-    <p id="done-summary"></p>
-    <button id="done-home" class="big" type="button">Back to start</button>
-  </section>
-
-  <section id="progress" class="screen" hidden>
-    <h2>My progress</h2>
-    <div id="progress-body"></div>
   </section>
 
   <section id="library" class="screen" hidden>

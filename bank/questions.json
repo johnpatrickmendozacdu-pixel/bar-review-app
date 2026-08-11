@@ -202,5 +202,57 @@
    }
   ],
   "difficulty": 3
+ },
+ {
+  "id": "q-civil-0007",
+  "schema_version": 2,
+  "type": "hypothetical",
+  "subject": "civil",
+  "question": "Marites sells a delivery van to Rico for six hundred thousand pesos, payable in twelve monthly installments, with a chattel mortgage over the van. Rico misses the fourth and fifth installments. Marites forecloses the chattel mortgage, sells the van at auction for four hundred thousand, and now sues Rico for the two hundred thousand shortfall. Rico argues she cannot collect the balance. Who is correct, and would your answer change if the object sold had been a parcel of land?",
+  "answer_key": "Rico is correct on these facts. The sale is of personal property payable in installments, so the seller's remedies are alternative, not cumulative: exact fulfillment, cancel the sale on default covering two or more installments, or foreclose the chattel mortgage. Having chosen foreclosure, Marites is barred from further recovery of the unpaid balance. Yes, the answer changes if the object were land: Art. 1484 governs only personal property, so a sale of realty falls back on the general rule for reciprocal obligations, where the injured party chooses between fulfillment and rescission and recovers damages either way.",
+  "exceptions": "Art. 1484 applies only to a sale of personal property payable in installments. Cancellation requires default covering two or more installments, so a single missed installment does not trigger that remedy. Where the object is real property, or the sale is not on installments, the general regime for reciprocal obligations applies instead and the bar on recovering a deficiency does not arise.",
+  "authorities": [
+   {
+    "doc_id": "ra-386-art-1484",
+    "citation": "Civil Code, Art. 1484",
+    "role": "controlling",
+    "quote": "In a contract of sale of personal property the price of which is payable in installments, the vendor may exercise any of the following remedies",
+    "source_url": "https://lawphil.net/statutes/repacts/ra1949/ra_386_1949.html"
+   },
+   {
+    "doc_id": "ra-386-art-1191",
+    "citation": "Civil Code, Art. 1191",
+    "role": "related",
+    "quote": "The injured party may choose between the fulfillment and the rescission of the obligation, with the payment of damages in either case",
+    "source_url": "https://lawphil.net/statutes/repacts/ra1949/ra_386_1949.html"
+   }
+  ],
+  "difficulty": 3
+ },
+ {
+  "id": "q-labor-0001",
+  "schema_version": 2,
+  "type": "hypothetical",
+  "subject": "labor",
+  "question": "Nena has been a regular employee for six years. Her employer dismisses her after she refuses a lawful instruction from her supervisor on one occasion, citing willful disobedience. No notice or hearing was given. Nena files an illegal dismissal complaint. Was the dismissal valid, and what is she entitled to?",
+  "answer_key": "It depends on whether the disobedience was truly willful and whether due process was observed, but on these facts the dismissal fails. Willful disobedience of a lawful order connected to the employee's work is a just cause, so the ground is available in principle. However, a single refusal is thin evidence of willfulness, and no notice or hearing was given at all. A regular employee may not be terminated except for just cause or an authorized cause, and an employee unjustly dismissed is entitled to reinstatement without loss of seniority rights and to full backwages. So: yes the employer may dismiss for willful disobedience if it is genuinely willful and procedural due process is observed; no on these facts, where neither is established.",
+  "exceptions": "The just causes are available only against the employee's own culpable acts; economic separations proceed instead under the authorized causes, with different notice and separation pay consequences. Where a just cause genuinely exists but procedural due process was not observed, the dismissal is not thereby void, and the consequence is limited to indemnity rather than reinstatement.",
+  "authorities": [
+   {
+    "doc_id": "pd-442-art-282",
+    "citation": "Labor Code, Art. 282",
+    "role": "controlling",
+    "quote": "An employer may terminate an employment for any of the following causes",
+    "source_url": "https://lawphil.net/statutes/presdecs/pd1974/pd_442_1974.html"
+   },
+   {
+    "doc_id": "pd-442-art-279",
+    "citation": "Labor Code, Art. 279",
+    "role": "related",
+    "quote": "An employee who is unjustly dismissed from work shall be entitled to reinstatement without loss of seniority rights",
+    "source_url": "https://lawphil.net/statutes/presdecs/pd1974/pd_442_1974.html"
+   }
+  ],
+  "difficulty": 2
  }
 ]

@@ -90,14 +90,26 @@ def parse_case(html: str, source_url: str) -> Document:
     if not number:
         raise ValueError(f"no numeric docket in {citation!r} from {source_url}")
 
-    prefix = "gr" if citation.upper().startswith("G.R.") else citation.split()[0].lower().replace(".", "")
+    prefix = (
+        "gr"
+        if citation.upper().startswith("G.R.")
+        else citation.split()[0].lower().replace(".", "")
+    )
+
+    # Use the WHOLE docket, not the first number in it. Administrative matters
+    # are numbered "A.M. No. 93-2-1011-RTC" — the leading 93 is the year, so
+    # taking the first number collapses every 1993 A.M. onto one id.
+    docket = re.sub(r"^.*?Nos?\.\s*", "", citation, flags=re.IGNORECASE)
+    slug = re.sub(r"[^a-z0-9]+", "-", docket.lower()).strip("-")
+    if not slug:
+        slug = number.group(1)
 
     body = text
     for chrome in _CHROME:
         body = body.replace(chrome, "")
 
     return Document(
-        id=f"{prefix}-{number.group(1)}",
+        id=f"{prefix}-{slug}",
         schema_version=config.SCHEMA_VERSION,
         type="case",
         title=_title_from(soup, citation),

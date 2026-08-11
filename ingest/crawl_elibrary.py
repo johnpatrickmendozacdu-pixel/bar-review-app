@@ -36,8 +36,16 @@ def parse_month_index(html: str) -> list[str]:
     return urls
 
 
-def months_until(cutoff: datetime.date, years_back: int) -> list[tuple[int, int]]:
-    """(year, month) pairs ending at the cut-off month, newest first."""
+def months_until(
+    cutoff: datetime.date, years_back: int, oldest_first: bool = False
+) -> list[tuple[int, int]]:
+    """(year, month) pairs ending at the cut-off month.
+
+    Newest first by default. `oldest_first` reverses it, which matters for
+    throughput: the e-Library's older months carry far more decisions than
+    recent ones, so starting at the old end reaches a target count in far
+    fewer index requests against a rate-limited government server.
+    """
     months = []
     year, month = cutoff.year, cutoff.month
     for _ in range(years_back * 12):
@@ -46,15 +54,19 @@ def months_until(cutoff: datetime.date, years_back: int) -> list[tuple[int, int]
         if month == 0:
             month = 12
             year -= 1
-    return months
+    return list(reversed(months)) if oldest_first else months
 
 
 def crawl_decision_urls(
-    fetcher, cutoff: datetime.date, years_back: int, limit: int
+    fetcher,
+    cutoff: datetime.date,
+    years_back: int,
+    limit: int,
+    oldest_first: bool = False,
 ) -> list[str]:
     """Decision URLs across months. One dead month must not abort the crawl."""
     urls = []
-    for year, month in months_until(cutoff, years_back):
+    for year, month in months_until(cutoff, years_back, oldest_first):
         if len(urls) >= limit:
             break
         try:

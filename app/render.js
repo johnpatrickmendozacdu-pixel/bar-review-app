@@ -36,6 +36,24 @@ export function renderQuestion(item, el) {
   el.question.hidden = !facts;
   el.call.textContent = call || item.question;
   el.answer.textContent = item.answer_key;
+
+  const exceptions = (item.exceptions || "").trim();
+  el.exceptions.textContent = exceptions;
+  el.exceptionsBlock.hidden = !exceptions;
+
+  // A related case is an authority with a different role, so both groups
+  // render through the same code and carry the same guarantee.
+  const byRole = (want) =>
+    (item.authorities || []).filter((a) => (a.role || "controlling") === want);
+
+  const controlling = byRole("controlling");
+  const related = byRole("related");
+
+  renderAuthorities(controlling, el.controlling);
+  el.controllingBlock.hidden = !controlling.length;
+
+  renderAuthorities(related, el.related);
+  el.relatedBlock.hidden = !related.length;
 }
 
 export function renderAuthorities(authorities, container) {

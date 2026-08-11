@@ -18,6 +18,13 @@ SUBJECTS = frozenset(
 # legal text — it proves nothing about grounding.
 MIN_QUOTE_LENGTH = 20
 
+# "controlling" governs the answer; "related" is a similar case offered for
+# context. Both are validated identically — a related case is a real corpus
+# document with a real verbatim quote, so its link and its text are as
+# trustworthy as the controlling authority's.
+ROLES = frozenset({"controlling", "related"})
+DEFAULT_ROLE = "controlling"
+
 
 class ValidationError(Exception):
     """An item failed a check and must not be shipped."""
@@ -66,6 +73,13 @@ def validate_item(item: dict, index: dict, cutoff: datetime.date) -> None:
     authorities = item.get("authorities") or []
     if not authorities:
         fail("must cite at least one authority")
+
+    roles = [a.get("role", DEFAULT_ROLE) for a in authorities]
+    for role in roles:
+        if role not in ROLES:
+            fail(f"authority role {role!r} not in {sorted(ROLES)}")
+    if DEFAULT_ROLE not in roles:
+        fail("must cite at least one controlling authority; something has to govern")
 
     for authority in authorities:
         doc_id = authority.get("doc_id")

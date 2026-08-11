@@ -215,3 +215,15 @@ mark { background: #ffe98a; color: #1b1b1a; padding: 0 0.15em; }
 
 .bar { height: 0.6rem; background: var(--line); border-radius: 999px; overflow: hidden; margin-top: 0.35rem; }
 .bar span { display: block; height: 100%; background: var(--accent); }
+
+.section-heading { font-size: 1rem; margin: 2.5rem 0 0.75rem; color: var(--quiet); font-weight: 600; }
+.sub-heading { font-size: 1rem; margin: 1.75rem 0 0.5rem; }
+#scoreline { margin: 0 0 0.5rem; }
+
+/* Phone: stack the grades so each stays a comfortable target. */
+@media (max-width: 380px) {
+  #grades { grid-template-columns: 1fr; }
+  main { padding: 1.5rem 1rem 5rem; }
+  .card { padding: 1.25rem; }
+}
+.grade, .big, .mode { min-height: 48px; }

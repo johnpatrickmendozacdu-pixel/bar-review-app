@@ -1,13 +1,7 @@
 // Wiring only. Logic lives in store.js, session.js, progress.js, render.js.
 
-import {
-  accuracy,
-  accuracyBySubject,
-  daysUntil,
-  streakDays,
-  weakestSubject,
-} from "./progress.js";
-import { renderAuthorities, renderProgress, renderQuestion } from "./render.js";
+import { accuracy, daysUntil, streakDays, weakestSubject } from "./progress.js";
+import { renderQuestion } from "./render.js";
 import { gradeItem, startSession } from "./session.js";
 import { createStore } from "./store.js";
 
@@ -45,14 +39,20 @@ function refreshHome() {
     now: Date.now(),
   });
 
-  const weakest = weakestSubject(history, 5);
-  const parts = [`${preview.length} question${preview.length === 1 ? "" : "s"} ready`];
-  if (history.length) parts.push(`${accuracy(history)}% right so far`);
-  if (weakest) parts.push(`weakest: ${SUBJECT_NAMES[weakest] || weakest}`);
-  $("status").textContent = parts.join(" · ");
+  $("status").textContent = preview.length
+    ? `${preview.length} question${preview.length === 1 ? "" : "s"} ready for you.`
+    : "Nothing due right now. Start anyway to study ahead.";
 
-  $("countdown").textContent =
-    `${daysUntil(settings.examDate, Date.now())} days until the Bar · law as of 30 June 2025`;
+  // One quiet line carries everything the old progress screen showed.
+  const weakest = weakestSubject(history, 5);
+  const bits = [`${daysUntil(settings.examDate, Date.now())} days until the Bar`];
+  if (history.length) {
+    bits.push(`${history.length} answered`, `${accuracy(history)}% right`);
+    const streak = streakDays(history, Date.now());
+    if (streak > 1) bits.push(`${streak}-day streak`);
+    if (weakest) bits.push(`weakest: ${SUBJECT_NAMES[weakest] || weakest}`);
+  }
+  $("scoreline").textContent = bits.join(" · ");
 }
 
 function renderPicker() {
@@ -106,8 +106,13 @@ function nextItem() {
     question: $("q-question"),
     call: $("q-call"),
     answer: $("q-answer"),
+    exceptions: $("q-exceptions"),
+    exceptionsBlock: $("exceptions-block"),
+    controlling: $("controlling"),
+    controllingBlock: $("controlling-block"),
+    related: $("related"),
+    relatedBlock: $("related-block"),
   });
-  renderAuthorities(current.authorities, $("authorities"));
 
   $("note").value = store.getNote(current.id);
   $("answer").hidden = true;
@@ -153,26 +158,11 @@ function grade(name) {
 }
 
 function finish() {
-  $("done-summary").textContent =
-    `You answered ${answered} question${answered === 1 ? "" : "s"}.`;
-  show("done");
   refreshHome();
-}
-
-function showProgress() {
-  const history = store.getHistory();
-  renderProgress(
-    {
-      total: history.length,
-      accuracy: accuracy(history),
-      streak: streakDays(history, Date.now()),
-      daysLeft: daysUntil(store.getSettings().examDate, Date.now()),
-      bySubject: accuracyBySubject(history),
-      subjectNames: SUBJECT_NAMES,
-    },
-    $("progress-body")
-  );
-  show("progress");
+  $("status").textContent = answered
+    ? `You answered ${answered} question${answered === 1 ? "" : "s"}. ${$("status").textContent}`
+    : $("status").textContent;
+  show("home");
 }
 
 function search(term) {
@@ -241,14 +231,30 @@ function renderSettings() {
   }
 }
 
+// Provisions are several megabytes and only the Search screen needs them.
+// Loading them lazily keeps first paint instant no matter how large the
+// corpus grows — questions carry their own quotes, so drilling needs nothing else.
+let provisionsPromise = null;
+
+function loadProvisions() {
+  if (!provisionsPromise) {
+    provisionsPromise = fetch("corpus/provisions.json")
+      .then((r) => (r.ok ? r.json() : []))
+      .then((data) => {
+        provisions = data;
+        return data;
+      })
+      .catch(() => {
+        provisionsPromise = null;
+        return [];
+      });
+  }
+  return provisionsPromise;
+}
+
 async function main() {
   try {
-    const [bank, provs] = await Promise.all([
-      fetch("bank/questions.json").then((r) => (r.ok ? r.json() : [])),
-      fetch("corpus/provisions.json").then((r) => (r.ok ? r.json() : [])),
-    ]);
-    items = bank;
-    provisions = provs;
+    items = await fetch("bank/questions.json").then((r) => (r.ok ? r.json() : []));
   } catch (err) {
     $("status").textContent =
       `Could not load the questions (${err.message}). If this is your first visit, connect once and reload.`;
@@ -263,35 +269,41 @@ async function main() {
     $("pick").hidden = true;
   }
 
-  const manifest = await fetch("corpus/manifest.json")
+  // Manifest is tiny and non-blocking; the app is already usable without it.
+  fetch("corpus/manifest.json")
     .then((r) => (r.ok ? r.json() : null))
-    .catch(() => null);
-
-  $("about-corpus").textContent = manifest
-    ? `${items.length} questions drawn from ${manifest.total} official documents. Coverage cut-off ${manifest.coverage_date}. Every quotation is checked against the source text before it ships.`
-    : `${items.length} questions loaded.`;
+    .then((manifest) => {
+      $("about-corpus").textContent = manifest
+        ? `${items.length} questions drawn from ${manifest.total} official documents. Coverage cut-off ${manifest.coverage_date}. Every quotation is checked word-for-word against the source before it ships.`
+        : `${items.length} questions loaded.`;
+    })
+    .catch(() => {});
 
   renderPicker();
   renderSettings();
   refreshHome();
 
   $("start").addEventListener("click", () => begin(null));
-  $("pick").addEventListener("click", () => {
-    $("picker").hidden = !$("picker").hidden;
-  });
   $("reveal").addEventListener("click", reveal);
   for (const b of document.querySelectorAll(".grade")) {
     b.addEventListener("click", () => grade(b.dataset.grade));
   }
   $("end").addEventListener("click", finish);
-  $("done-home").addEventListener("click", () => show("home"));
 
   $("nav-home").addEventListener("click", () => {
     refreshHome();
     show("home");
   });
-  $("nav-progress").addEventListener("click", showProgress);
-  $("nav-library").addEventListener("click", () => show("library"));
+  $("nav-library").addEventListener("click", async () => {
+    show("library");
+    if (!provisions.length) {
+      $("results-count").textContent = "Loading the law\u2026";
+      await loadProvisions();
+      $("results-count").textContent = provisions.length
+        ? "Type at least three letters."
+        : "Could not load the law. Check your connection and try again.";
+    }
+  });
   $("nav-settings").addEventListener("click", () => {
     renderSettings();
     show("settings");

@@ -60,14 +60,16 @@ def run(seeds: list[dict], fetcher, out_dir: pathlib.Path) -> dict:
     return manifest
 
 
-def ingest_cases(fetcher, cutoff: datetime.date, years_back: int, limit: int) -> list:
+def ingest_cases(
+    fetcher, cutoff: datetime.date, years_back: int, limit: int, oldest_first: bool = False
+) -> list:
     """Crawl, parse, date-fence and subject-tag e-Library decisions.
 
     A decision after the cut-off is dropped rather than stored: the 2026 Bar
     cannot test it, so it must never reach an answer key.
     """
     documents = []
-    for url in crawl_decision_urls(fetcher, cutoff, years_back, limit):
+    for url in crawl_decision_urls(fetcher, cutoff, years_back, limit, oldest_first):
         try:
             doc = parse_case(fetcher.get(url), url)
         except Exception as exc:
@@ -84,9 +86,14 @@ def ingest_cases(fetcher, cutoff: datetime.date, years_back: int, limit: int) ->
     return documents
 
 
-def run_cases(fetcher, out_dir: pathlib.Path, limit: int) -> dict:
+def run_cases(
+    fetcher, out_dir: pathlib.Path, limit: int, years_back: int = 3, oldest_first: bool = False
+) -> dict:
     """Statutes from seeds plus crawled cases, emitted as one corpus."""
-    cases = ingest_cases(fetcher, config.COVERAGE_DATE, years_back=3, limit=limit)
+    cases = ingest_cases(
+        fetcher, config.COVERAGE_DATE, years_back=years_back, limit=limit,
+        oldest_first=oldest_first,
+    )
     print(f"Ingested {len(cases)} cases within the cut-off.", file=sys.stderr)
 
     statutes = []
@@ -114,11 +121,18 @@ def main() -> int:
     fetcher = Fetcher(pathlib.Path(".cache"))
 
     if "--cases" in sys.argv:
-        limit = 200
+        limit, years_back = 200, 3
         for arg in sys.argv:
             if arg.startswith("--limit="):
                 limit = int(arg.split("=", 1)[1])
-        print(json.dumps(run_cases(fetcher, CORPUS_DIR, limit), indent=1))
+            if arg.startswith("--years="):
+                years_back = int(arg.split("=", 1)[1])
+        oldest_first = "--oldest-first" in sys.argv
+        print(
+            json.dumps(
+                run_cases(fetcher, CORPUS_DIR, limit, years_back, oldest_first), indent=1
+            )
+        )
         return 0
 
     manifest = run(load_seeds(SEEDS_PATH), fetcher, CORPUS_DIR)
