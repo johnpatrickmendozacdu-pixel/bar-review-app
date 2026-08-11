@@ -91,3 +91,88 @@ def test_unknown_source_is_rejected(tmp_path):
     seeds = [{"url": "https://x/a", "source": "wikipedia", "subject": "civil"}]
     with pytest.raises(ValueError, match="wikipedia"):
         run(seeds, StubFetcher({"https://x/a": STATUTE_HTML}), tmp_path)
+
+
+import datetime
+
+from ingest.__main__ import ingest_cases
+
+CUTOFF_DATE = datetime.date(2025, 6, 30)
+
+
+def case_html(gr, month, year, body="The accused was charged with estafa under the Revised Penal Code. "):
+    return (
+        f"<html><title>G.R. No. {gr} - ALPHA VS. BETA D E C I S I O N</title><body>"
+        f"<p>[ G.R. No. {gr}, {month} 3, {year} ]</p><p>{body * 60}</p></body></html>"
+    )
+
+
+class CrawlStub:
+    def __init__(self, pages):
+        self.pages = pages
+
+    def get(self, url):
+        if url not in self.pages:
+            raise RuntimeError(f"404 {url}")
+        return self.pages[url]
+
+
+def test_ingest_cases_drops_anything_after_the_cutoff():
+    from ingest.crawl_elibrary import month_url
+
+    index = '<a href="https://elibrary.judiciary.gov.ph/thebookshelf/showdocs/1/9">x</a>'
+    pages = {
+        month_url(2025, 6): index,
+        "https://elibrary.judiciary.gov.ph/thebookshelf/showdocs/1/9": case_html(
+            "999", "August", "2025"
+        ),
+    }
+    docs = ingest_cases(CrawlStub(pages), CUTOFF_DATE, years_back=1, limit=5)
+    assert docs == [], "an August 2025 decision is past the June 2025 cut-off"
+
+
+def test_ingest_cases_keeps_documents_within_the_fence():
+    from ingest.crawl_elibrary import month_url
+
+    index = '<a href="https://elibrary.judiciary.gov.ph/thebookshelf/showdocs/1/8">x</a>'
+    pages = {
+        month_url(2025, 6): index,
+        "https://elibrary.judiciary.gov.ph/thebookshelf/showdocs/1/8": case_html(
+            "888", "June", "2025"
+        ),
+    }
+    docs = ingest_cases(CrawlStub(pages), CUTOFF_DATE, years_back=1, limit=5)
+    assert len(docs) == 1
+    assert docs[0].citation == "G.R. No. 888"
+
+
+def test_ingest_cases_tags_the_subject():
+    from ingest.crawl_elibrary import month_url
+
+    index = '<a href="https://elibrary.judiciary.gov.ph/thebookshelf/showdocs/1/7">x</a>'
+    pages = {
+        month_url(2025, 6): index,
+        "https://elibrary.judiciary.gov.ph/thebookshelf/showdocs/1/7": case_html(
+            "777", "June", "2025"
+        ),
+    }
+    docs = ingest_cases(CrawlStub(pages), CUTOFF_DATE, years_back=1, limit=5)
+    assert docs[0].subject == "criminal"
+
+
+def test_an_unparseable_case_does_not_abort_the_run():
+    from ingest.crawl_elibrary import month_url
+
+    index = (
+        '<a href="https://elibrary.judiciary.gov.ph/thebookshelf/showdocs/1/6">a</a>'
+        '<a href="https://elibrary.judiciary.gov.ph/thebookshelf/showdocs/1/5">b</a>'
+    )
+    pages = {
+        month_url(2025, 6): index,
+        "https://elibrary.judiciary.gov.ph/thebookshelf/showdocs/1/6": "<html><body>no docket here</body></html>",
+        "https://elibrary.judiciary.gov.ph/thebookshelf/showdocs/1/5": case_html(
+            "555", "June", "2025"
+        ),
+    }
+    docs = ingest_cases(CrawlStub(pages), CUTOFF_DATE, years_back=1, limit=5)
+    assert len(docs) == 1

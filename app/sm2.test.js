@@ -1,5 +1,6 @@
 // Run: node app/sm2.test.js
 import assert from "node:assert/strict";
+import test from "node:test";
 import {
   AGAIN,
   GOOD,
@@ -13,17 +14,6 @@ import {
 
 const DAY = 86400000;
 const T0 = 1000000000000;
-let passed = 0;
-
-function test(name, fn) {
-  try {
-    fn();
-    passed++;
-  } catch (err) {
-    console.error(`FAIL: ${name}\n  ${err.message}`);
-    process.exitCode = 1;
-  }
-}
 
 test("a new card is due immediately and unstudied", () => {
   const c = newCard("ra-386-art-1191");
@@ -108,9 +98,3 @@ test("a full study lifecycle reaches month-long intervals", () => {
   }
   assert.ok(c.interval > 30, `expected >30 days after 5 clean reviews, got ${c.interval}`);
 });
-
-if (process.exitCode) {
-  console.error(`\n${passed} passed, some failed.`);
-} else {
-  console.log(`${passed} passed`);
-}

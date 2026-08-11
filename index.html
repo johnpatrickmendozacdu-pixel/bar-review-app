@@ -10,87 +10,100 @@
 </head>
 <body>
 
+<a class="skip" href="#main">Skip to main content</a>
+
 <header>
   <button id="nav-home" class="link" type="button">Bar Review</button>
   <nav>
+    <button id="nav-progress" class="link" type="button">My progress</button>
     <button id="nav-library" class="link" type="button">Search the law</button>
     <button id="nav-settings" class="link" type="button">Settings</button>
   </nav>
 </header>
 
-<main>
+<main id="main">
 
-  <!-- HOME: one button. Everything else is quiet. -->
   <section id="home" class="screen">
-    <p id="status" class="status">Loading…</p>
+    <p id="status" class="status">Loading&hellip;</p>
     <button id="start" class="big" type="button">Start today's review</button>
     <p id="countdown" class="quiet"></p>
-    <button id="pick" class="link quiet" type="button">Pick something else</button>
-    <div id="picker" hidden>
-      <button class="mode" type="button" data-subject="">Everything</button>
-      <button class="mode" type="button" data-subject="civil">Civil Law</button>
-      <button class="mode" type="button" data-subject="criminal">Criminal Law</button>
-      <button class="mode" type="button" data-subject="political">Political Law</button>
-      <button class="mode" type="button" data-subject="commercial_tax">Commercial &amp; Tax</button>
-    </div>
+    <button id="pick" class="link" type="button">Choose a subject instead</button>
+    <div id="picker" hidden></div>
   </section>
 
-  <!-- SESSION: one card, nothing else. -->
   <section id="session" class="screen" hidden>
-    <p id="progress" class="quiet"></p>
+    <p id="progress-line" class="quiet"></p>
+
     <article class="card">
-      <h2 id="card-citation"></h2>
-      <div id="card-answer" hidden>
-        <p id="card-text"></p>
-        <a id="card-source" class="quiet" target="_blank" rel="noopener noreferrer">View the official source</a>
+      <p id="q-type" class="badge"></p>
+      <p id="q-question" class="legal"></p>
+      <p id="q-call"></p>
+
+      <div id="answer" hidden>
+        <h2 class="answer-heading">Answer key</h2>
+        <p id="q-answer" class="legal"></p>
+        <p class="aid-note">This explanation is a study aid. The quoted law below is the authority.</p>
+        <div id="authorities"></div>
+        <p class="verified">Every quotation above was checked against the official text before this question shipped &middot; law as of 30 June 2025</p>
       </div>
     </article>
-    <button id="reveal" class="big" type="button">Show the answer</button>
-    <div id="grades" hidden>
-      <button class="grade again" type="button" data-grade="0">Didn't know<small>1</small></button>
-      <button class="grade hard"  type="button" data-grade="3">Hard<small>2</small></button>
-      <button class="grade good"  type="button" data-grade="5">Knew it<small>3</small></button>
+
+    <button id="reveal" class="big" type="button">Show the answer key</button>
+
+    <div id="grading" hidden>
+      <p class="grade-prompt">Did you get it right?</p>
+      <div id="grades">
+        <button class="grade no" type="button" data-grade="no">No</button>
+        <button class="grade partly" type="button" data-grade="partly">Partly</button>
+        <button class="grade yes" type="button" data-grade="yes">Yes</button>
+      </div>
+      <label for="note">Your notes on this question</label>
+      <textarea id="note" rows="3" placeholder="What you missed, or what your professor said"></textarea>
     </div>
-    <button id="end" class="link quiet" type="button">End session</button>
+
+    <button id="end" class="link" type="button">End this session</button>
   </section>
 
-  <!-- DONE -->
   <section id="done" class="screen" hidden>
     <h2>Session finished</h2>
     <p id="done-summary"></p>
     <button id="done-home" class="big" type="button">Back to start</button>
   </section>
 
-  <!-- LIBRARY -->
+  <section id="progress" class="screen" hidden>
+    <h2>My progress</h2>
+    <div id="progress-body"></div>
+  </section>
+
   <section id="library" class="screen" hidden>
-    <label for="q">Search the law</label>
-    <input id="q" type="search" placeholder="e.g. rescission, estafa, patent" autocomplete="off">
+    <h2>Search the law</h2>
+    <label for="q">Type a word or phrase</label>
+    <input id="q" type="search" autocomplete="off" placeholder="rescission">
     <p id="results-count" class="quiet"></p>
     <div id="results"></div>
   </section>
 
-  <!-- SETTINGS -->
   <section id="settings" class="screen" hidden>
     <h2>Settings</h2>
 
     <label for="exam-date">Your exam date</label>
     <input id="exam-date" type="date">
 
-    <label for="new-limit">New cards per day</label>
+    <label for="new-limit">New questions per day</label>
     <input id="new-limit" type="number" min="0" max="200" step="5">
-    <p class="quiet">Start low. 20 a day is 600 a month.</p>
+    <p class="quiet">Start low. Twenty a day is six hundred a month.</p>
 
     <fieldset>
       <legend>Subjects to study</legend>
       <div id="subjects"></div>
     </fieldset>
 
-    <h3>Your progress</h3>
-    <p class="quiet">Everything you do stays on this device. Nothing is uploaded.</p>
-    <button id="export" class="link" type="button">Save a backup file</button>
-    <label for="import" class="link">Restore from a backup file</label>
+    <h3>Your progress file</h3>
+    <p class="quiet">Everything stays on this device. Nothing is uploaded.</p>
+    <button id="export" class="secondary" type="button">Save a backup file</button>
+    <label for="import">Restore from a backup file</label>
     <input id="import" type="file" accept="application/json">
-    <p id="settings-msg" class="quiet"></p>
+    <p id="settings-msg" class="quiet" role="status"></p>
 
     <h3>About the law in this app</h3>
     <p class="quiet" id="about-corpus"></p>

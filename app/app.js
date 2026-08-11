@@ -1,165 +1,178 @@
-// Bar Review — drills over verbatim statutory provisions.
-// No framework, no build step. Everything you do stays in this browser.
+// Wiring only. Logic lives in store.js, session.js, progress.js, render.js.
 
-import { buildQueue, newCard, review } from "./sm2.js";
-
-const CARDS_KEY = "barrev.cards";
-const SETTINGS_KEY = "barrev.settings";
-
-const DEFAULTS = {
-  examDate: "2026-09-06", // Day 1 of the 2026 Bar
-  newLimit: 20,
-  subjects: ["civil", "criminal", "political", "commercial_tax"],
-};
+import {
+  accuracy,
+  accuracyBySubject,
+  daysUntil,
+  streakDays,
+  weakestSubject,
+} from "./progress.js";
+import { renderAuthorities, renderProgress, renderQuestion } from "./render.js";
+import { gradeItem, startSession } from "./session.js";
+import { createStore } from "./store.js";
 
 const SUBJECT_NAMES = {
-  civil: "Civil Law",
-  criminal: "Criminal Law",
-  political: "Political Law",
-  commercial_tax: "Commercial & Tax",
-  labor: "Labor Law",
   remedial: "Remedial Law",
+  civil: "Civil Law",
+  commercial_tax: "Commercial and Tax",
+  political: "Political Law",
+  labor: "Labor Law",
+  criminal: "Criminal Law",
 };
 
 const $ = (id) => document.getElementById(id);
+const store = createStore(localStorage);
 
+let items = [];
 let provisions = [];
-let cards = {};
-let settings = { ...DEFAULTS };
 let queue = [];
 let current = null;
-let reviewed = 0;
-
-// ---------- storage ----------
-// ponytail: localStorage. Progress is a few hundred KB even after a year of
-// study; move to IndexedDB only if it approaches the ~5MB cap.
-
-function load() {
-  try {
-    cards = JSON.parse(localStorage.getItem(CARDS_KEY)) || {};
-  } catch {
-    cards = {};
-  }
-  try {
-    settings = { ...DEFAULTS, ...(JSON.parse(localStorage.getItem(SETTINGS_KEY)) || {}) };
-  } catch {
-    settings = { ...DEFAULTS };
-  }
-}
-
-function saveCards() {
-  localStorage.setItem(CARDS_KEY, JSON.stringify(cards));
-}
-
-function saveSettings() {
-  localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings));
-}
-
-// ---------- screens ----------
+let answered = 0;
 
 function show(name) {
   for (const el of document.querySelectorAll(".screen")) el.hidden = el.id !== name;
   window.scrollTo(0, 0);
 }
 
-// ---------- home ----------
-
-function activeProvisions() {
-  return provisions.filter((p) => settings.subjects.includes(p.subject));
-}
-
-function cardStates() {
-  return activeProvisions().map((p) => cards[p.id] || newCard(p.id));
-}
-
-function daysToExam() {
-  const diff = new Date(settings.examDate) - Date.now();
-  return Math.max(0, Math.ceil(diff / 86400000));
-}
-
 function refreshHome() {
-  const now = Date.now();
-  const all = cardStates();
-  const due = buildQueue(all, now, settings.newLimit);
-  const seen = all.filter((c) => c.reps > 0).length;
+  const settings = store.getSettings();
+  const history = store.getHistory();
+  const { queue: preview } = startSession({
+    items,
+    cards: store.getCards(),
+    settings,
+    subject: null,
+    now: Date.now(),
+  });
 
-  $("status").textContent = due.length
-    ? `${due.length} card${due.length === 1 ? "" : "s"} ready · ${seen} of ${all.length} started`
-    : `Nothing due right now. ${seen} of ${all.length} started.`;
+  const weakest = weakestSubject(history, 5);
+  const parts = [`${preview.length} question${preview.length === 1 ? "" : "s"} ready`];
+  if (history.length) parts.push(`${accuracy(history)}% right so far`);
+  if (weakest) parts.push(`weakest: ${SUBJECT_NAMES[weakest] || weakest}`);
+  $("status").textContent = parts.join(" · ");
 
-  $("start").textContent = due.length ? "Start today's review" : "Study ahead anyway";
-  $("countdown").textContent = `${daysToExam()} days until the Bar · law as of 30 June 2025`;
+  $("countdown").textContent =
+    `${daysUntil(settings.examDate, Date.now())} days until the Bar · law as of 30 June 2025`;
 }
 
-// ---------- session ----------
+function renderPicker() {
+  const box = $("picker");
+  box.textContent = "";
+  const subjects = [...new Set(items.map((i) => i.subject))].sort();
 
-function startSession(subject) {
-  const now = Date.now();
-  const pool = subject
-    ? provisions.filter((p) => p.subject === subject)
-    : activeProvisions();
+  const all = document.createElement("button");
+  all.type = "button";
+  all.className = "mode";
+  all.textContent = "Everything";
+  all.addEventListener("click", () => begin(null));
+  box.appendChild(all);
 
-  const states = pool.map((p) => cards[p.id] || newCard(p.id));
-  queue = buildQueue(states, now, settings.newLimit);
+  for (const s of subjects) {
+    const count = items.filter((i) => i.subject === s).length;
+    const b = document.createElement("button");
+    b.type = "button";
+    b.className = "mode";
+    b.textContent = `${SUBJECT_NAMES[s] || s} (${count} question${count === 1 ? "" : "s"})`;
+    b.addEventListener("click", () => begin(s));
+    box.appendChild(b);
+  }
+}
+
+function begin(subject) {
+  const { queue: built } = startSession({
+    items,
+    cards: store.getCards(),
+    settings: store.getSettings(),
+    subject,
+    now: Date.now(),
+  });
+  queue = built;
+  answered = 0;
 
   if (!queue.length) {
-    // Nothing due: study the least-recently-seen material instead of nothing.
-    queue = states.sort((a, b) => a.due - b.due).slice(0, settings.newLimit);
+    $("status").textContent = "No questions available for that choice yet.";
+    show("home");
+    return;
   }
-
-  reviewed = 0;
-  nextCard();
+  nextItem();
 }
 
-function nextCard() {
-  if (!queue.length) return finishSession();
+function nextItem() {
+  if (!queue.length) return finish();
 
   current = queue.shift();
-  const prov = provisions.find((p) => p.id === current.id);
-  if (!prov) return nextCard();
+  renderQuestion(current, {
+    type: $("q-type"),
+    question: $("q-question"),
+    call: $("q-call"),
+    answer: $("q-answer"),
+  });
+  renderAuthorities(current.authorities, $("authorities"));
 
-  $("card-citation").textContent = prov.citation;
-  $("card-text").textContent = prov.text;
-  $("card-source").href = prov.source_url;
-  $("card-answer").hidden = true;
+  $("note").value = store.getNote(current.id);
+  $("answer").hidden = true;
+  $("grading").hidden = true;
   $("reveal").hidden = false;
-  $("grades").hidden = true;
-  $("progress").textContent = `${queue.length + 1} left in this session`;
+  $("progress-line").textContent = `${queue.length + 1} left in this session`;
 
   show("session");
 }
 
-function revealAnswer() {
-  $("card-answer").hidden = false;
+function reveal() {
+  $("answer").hidden = false;
   $("reveal").hidden = true;
-  $("grades").hidden = false;
+  $("grading").hidden = false;
 }
 
-function gradeCard(grade) {
-  if ($("grades").hidden) return;
-  const updated = review(current, grade, Date.now());
-  cards[updated.id] = updated;
-  saveCards();
-  reviewed++;
+function grade(name) {
+  if ($("grading").hidden) return;
 
-  // A forgotten card comes back at the end of this same session.
-  if (grade < 3) queue.push(updated);
+  const cards = store.getCards();
+  const card = cards[current.id] || {
+    id: current.id,
+    ease: 2.5,
+    interval: 0,
+    reps: 0,
+    due: 0,
+    lapses: 0,
+  };
+  const { card: updated, historyEntry } = gradeItem({
+    item: current,
+    card,
+    grade: name,
+    now: Date.now(),
+  });
 
-  nextCard();
+  store.setNote(current.id, $("note").value);
+  store.setCard(updated);
+  store.appendHistory(historyEntry);
+  answered++;
+
+  if (name === "no") queue.push(current);
+  nextItem();
 }
 
-function finishSession() {
-  $("done-summary").textContent = `You reviewed ${reviewed} card${reviewed === 1 ? "" : "s"}.`;
+function finish() {
+  $("done-summary").textContent =
+    `You answered ${answered} question${answered === 1 ? "" : "s"}.`;
   show("done");
   refreshHome();
 }
 
-// ---------- library ----------
-
-function escapeHtml(s) {
-  return s.replace(/[&<>"']/g, (c) =>
-    ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]
+function showProgress() {
+  const history = store.getHistory();
+  renderProgress(
+    {
+      total: history.length,
+      accuracy: accuracy(history),
+      streak: streakDays(history, Date.now()),
+      daysLeft: daysUntil(store.getSettings().examDate, Date.now()),
+      bySubject: accuracyBySubject(history),
+      subjectNames: SUBJECT_NAMES,
+    },
+    $("progress-body")
   );
+  show("progress");
 }
 
 function search(term) {
@@ -172,99 +185,82 @@ function search(term) {
     return;
   }
 
-  // ponytail: linear scan over ~2,900 provisions is instant. Build an index
-  // only if the corpus passes a few thousand documents.
+  // ponytail: linear scan over a few thousand provisions is instant. Build an
+  // index only if the corpus grows past that.
   const hits = provisions.filter((p) => p.text.toLowerCase().includes(q)).slice(0, 50);
   $("results-count").textContent = hits.length
     ? `${hits.length} result${hits.length === 1 ? "" : "s"}`
     : "Nothing found.";
 
   for (const p of hits) {
-    const div = document.createElement("div");
-    div.className = "result";
     const i = p.text.toLowerCase().indexOf(q);
     const start = Math.max(0, i - 90);
-    const snippet = p.text.slice(start, i + 220);
-    div.innerHTML =
-      `<h3></h3><p>${start > 0 ? "…" : ""}${escapeHtml(snippet.slice(0, i - start))}` +
-      `<mark>${escapeHtml(snippet.slice(i - start, i - start + q.length))}</mark>` +
-      `${escapeHtml(snippet.slice(i - start + q.length))}…</p>`;
-    div.querySelector("h3").textContent = p.citation;
+
+    const div = document.createElement("div");
+    div.className = "result";
+
+    const cite = document.createElement("p");
+    cite.className = "result-cite";
+    cite.textContent = p.citation;
+
+    const text = document.createElement("p");
+    text.className = "result-text";
+    text.append(document.createTextNode((start > 0 ? "…" : "") + p.text.slice(start, i)));
+    const hit = document.createElement("mark");
+    hit.textContent = p.text.slice(i, i + q.length);
+    text.append(hit, document.createTextNode(p.text.slice(i + q.length, i + 220) + "…"));
+
+    div.append(cite, text);
     results.appendChild(div);
   }
 }
 
-// ---------- settings ----------
-
 function renderSettings() {
+  const settings = store.getSettings();
   $("exam-date").value = settings.examDate;
   $("new-limit").value = settings.newLimit;
 
   const box = $("subjects");
   box.textContent = "";
-  const present = [...new Set(provisions.map((p) => p.subject))].filter(Boolean);
-
-  for (const s of present) {
+  for (const s of [...new Set(items.map((i) => i.subject))].sort()) {
     const label = document.createElement("label");
     const input = document.createElement("input");
     input.type = "checkbox";
     input.checked = settings.subjects.includes(s);
     input.addEventListener("change", () => {
-      settings.subjects = input.checked
-        ? [...new Set([...settings.subjects, s])]
-        : settings.subjects.filter((x) => x !== s);
-      saveSettings();
+      const currentSubjects = store.getSettings().subjects;
+      store.setSettings({
+        subjects: input.checked
+          ? [...new Set([...currentSubjects, s])]
+          : currentSubjects.filter((x) => x !== s),
+      });
       refreshHome();
     });
-    const count = provisions.filter((p) => p.subject === s).length;
-    label.append(input, ` ${SUBJECT_NAMES[s] || s} (${count})`);
+    label.append(input, ` ${SUBJECT_NAMES[s] || s}`);
     box.appendChild(label);
   }
 }
 
-function exportBackup() {
-  const blob = new Blob([JSON.stringify({ cards, settings }, null, 1)], {
-    type: "application/json",
-  });
-  const a = document.createElement("a");
-  a.href = URL.createObjectURL(blob);
-  a.download = `bar-review-backup-${new Date().toISOString().slice(0, 10)}.json`;
-  a.click();
-  URL.revokeObjectURL(a.href);
-  $("settings-msg").textContent = "Backup saved to your downloads.";
-}
-
-async function importBackup(file) {
-  try {
-    const data = JSON.parse(await file.text());
-    if (!data.cards || typeof data.cards !== "object") throw new Error("no cards");
-    cards = data.cards;
-    settings = { ...DEFAULTS, ...(data.settings || {}) };
-    saveCards();
-    saveSettings();
-    renderSettings();
-    refreshHome();
-    $("settings-msg").textContent = `Restored ${Object.keys(cards).length} cards.`;
-  } catch (err) {
-    $("settings-msg").textContent = `That file could not be read (${err.message}).`;
-  }
-}
-
-// ---------- boot ----------
-
 async function main() {
-  load();
-
   try {
-    const res = await fetch("corpus/provisions.json");
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    provisions = await res.json();
+    const [bank, provs] = await Promise.all([
+      fetch("bank/questions.json").then((r) => (r.ok ? r.json() : [])),
+      fetch("corpus/provisions.json").then((r) => (r.ok ? r.json() : [])),
+    ]);
+    items = bank;
+    provisions = provs;
   } catch (err) {
     $("status").textContent =
-      `Could not load the law (${err.message}). If you are offline and have ` +
-      `not opened this app before, connect once and reload.`;
+      `Could not load the questions (${err.message}). If this is your first visit, connect once and reload.`;
     $("start").hidden = true;
     return;
+  }
+
+  if (!items.length) {
+    $("status").textContent =
+      "No practice questions are loaded yet. You can still search the law.";
+    $("start").hidden = true;
+    $("pick").hidden = true;
   }
 
   const manifest = await fetch("corpus/manifest.json")
@@ -272,32 +268,29 @@ async function main() {
     .catch(() => null);
 
   $("about-corpus").textContent = manifest
-    ? `${provisions.length} provisions from ${manifest.total} official documents. ` +
-      `Coverage cut-off ${manifest.coverage_date}. Last updated ` +
-      `${manifest.generated_at.slice(0, 10)}. Every card is the verbatim text of the law.`
-    : `${provisions.length} provisions loaded.`;
+    ? `${items.length} questions drawn from ${manifest.total} official documents. Coverage cut-off ${manifest.coverage_date}. Every quotation is checked against the source text before it ships.`
+    : `${items.length} questions loaded.`;
 
+  renderPicker();
   renderSettings();
   refreshHome();
 
-  $("start").addEventListener("click", () => startSession(null));
+  $("start").addEventListener("click", () => begin(null));
   $("pick").addEventListener("click", () => {
     $("picker").hidden = !$("picker").hidden;
   });
-  for (const b of document.querySelectorAll(".mode")) {
-    b.addEventListener("click", () => startSession(b.dataset.subject || null));
-  }
-  $("reveal").addEventListener("click", revealAnswer);
+  $("reveal").addEventListener("click", reveal);
   for (const b of document.querySelectorAll(".grade")) {
-    b.addEventListener("click", () => gradeCard(Number(b.dataset.grade)));
+    b.addEventListener("click", () => grade(b.dataset.grade));
   }
-  $("end").addEventListener("click", finishSession);
+  $("end").addEventListener("click", finish);
   $("done-home").addEventListener("click", () => show("home"));
 
   $("nav-home").addEventListener("click", () => {
     refreshHome();
     show("home");
   });
+  $("nav-progress").addEventListener("click", showProgress);
   $("nav-library").addEventListener("click", () => show("library"));
   $("nav-settings").addEventListener("click", () => {
     renderSettings();
@@ -306,27 +299,37 @@ async function main() {
 
   $("q").addEventListener("input", (e) => search(e.target.value));
   $("exam-date").addEventListener("change", (e) => {
-    settings.examDate = e.target.value;
-    saveSettings();
+    store.setSettings({ examDate: e.target.value });
     refreshHome();
   });
   $("new-limit").addEventListener("change", (e) => {
-    settings.newLimit = Math.max(0, Number(e.target.value) || 0);
-    saveSettings();
+    store.setSettings({ newLimit: Math.max(0, Number(e.target.value) || 0) });
     refreshHome();
   });
-  $("export").addEventListener("click", exportBackup);
-  $("import").addEventListener("change", (e) => {
-    if (e.target.files[0]) importBackup(e.target.files[0]);
+
+  $("export").addEventListener("click", () => {
+    const blob = new Blob([JSON.stringify(store.exportAll(), null, 1)], {
+      type: "application/json",
+    });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = `bar-review-backup-${new Date().toISOString().slice(0, 10)}.json`;
+    a.click();
+    URL.revokeObjectURL(a.href);
+    $("settings-msg").textContent = "Backup saved to your downloads.";
   });
 
-  document.addEventListener("keydown", (e) => {
-    if ($("session").hidden) return;
-    if (e.key === " " && !$("reveal").hidden) {
-      e.preventDefault();
-      revealAnswer();
+  $("import").addEventListener("change", async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    try {
+      store.importAll(JSON.parse(await file.text()));
+      renderSettings();
+      refreshHome();
+      $("settings-msg").textContent = "Your progress was restored.";
+    } catch (err) {
+      $("settings-msg").textContent = err.message;
     }
-    if (["1", "2", "3"].includes(e.key)) gradeCard([0, 3, 5][Number(e.key) - 1]);
   });
 
   if ("serviceWorker" in navigator) {
