@@ -441,3 +441,45 @@ def test_quote_is_checked_against_the_elibrary_as_primary():
     """The Court's wording governs, even where lawphil differs."""
     ok = el_item("contrary to law, willfully or negligently causes damage to another")
     validate_item(ok, EL_INDEX, CUTOFF, None, ELIBRARY, PARENTS)
+
+
+def test_cases_fetched_from_the_elibrary_count_as_primary_source():
+    """corpus/case.json is scraped from the e-Library itself, so a decision is
+    already the Court's own text and must not fail the primary-source check."""
+    from bank.validate import elibrary_sources
+
+    sources = elibrary_sources(
+        statutes={"ra-386": {"url": "x", "text": "statute text"}},
+        cases=[
+            {
+                "id": "gr-127255",
+                "text": "the enrolled bill doctrine text",
+                "source_url": "https://elibrary.judiciary.gov.ph/thebookshelf/showdocs/1/123",
+            }
+        ],
+    )
+    assert "gr-127255" in sources
+    assert "ra-386" in sources
+
+
+def test_a_case_not_from_the_elibrary_is_not_treated_as_primary():
+    from bank.validate import elibrary_sources
+
+    sources = elibrary_sources(
+        statutes={},
+        cases=[{"id": "gr-1", "text": "t", "source_url": "https://example.com/x"}],
+    )
+    assert "gr-1" not in sources
+
+
+def test_a_source_url_that_does_not_match_the_corpus_document_is_rejected():
+    """A fabricated link is as bad as a fabricated quote — the student clicks it."""
+    bad = item_v2()
+    bad["authorities"][0]["source_url"] = "https://elibrary.judiciary.gov.ph/thebookshelf/showdocs/1/99999"
+    with pytest.raises(ValidationError, match="source_url"):
+        validate_item(bad, INDEX, CUTOFF, None, None, None, {"ra-386-art-1191": "https://lawphil.net/x"})
+
+
+def test_a_matching_source_url_passes():
+    ok = item_v2()
+    validate_item(ok, INDEX, CUTOFF, None, None, None, {"ra-386-art-1191": "https://lawphil.net/x"})

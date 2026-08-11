@@ -259,5 +259,64 @@
    }
   ],
   "difficulty": 3
+ },
+ {
+  "id": "q-remedial-0001",
+  "schema_version": 2,
+  "type": "hypothetical",
+  "subject": "remedial",
+  "question": "Teodoro applies to register a parcel of land he and his predecessors have possessed openly and continuously since 1938. The land registration court sets an initial hearing and the notice is published in the Official Gazette — but never in a newspaper of general circulation. Nobody opposes the application, and the evidence of possession is strong. The trial court nevertheless dismisses for want of jurisdiction. On appeal the Court of Appeals reverses, holding that publication in a newspaper is merely procedural since Official Gazette publication already confers jurisdiction. Was the Court of Appeals correct?",
+  "answer_key": "No. This is Director of Lands v. Court of Appeals and Abistado, where the Supreme Court held that newspaper publication of the notice of initial hearing is mandatory, not directory. The Court read the statutory term in its normal mandatory meaning, and reasoned from the nature of the proceeding: land registration is a proceeding in rem, and an in rem proceeding is validated essentially through publication, so the process must strictly be complied with. The absence of opposition does not cure the defect, because the very purpose of publication is to reach persons who do not yet know their rights are at stake. Strength of the possession evidence is irrelevant to jurisdiction.",
+  "exceptions": "The ruling concerns the notice of initial hearing in an ORIGINAL land registration case. It does not govern subsequent proceedings on a title already registered, nor cadastral proceedings with their own notice regime. Note also that the Court distinguished the two publication requirements: Official Gazette publication and newspaper publication serve different functions, and compliance with one does not excuse the other.",
+  "authorities": [
+   {
+    "doc_id": "gr-102858",
+    "citation": "Director of Lands v. Court of Appeals and Abistado, G.R. No. 102858 (28 July 1997)",
+    "role": "controlling",
+    "quote": "we hold that in the present case the term must be understood in its normal mandatory meaning",
+    "source_url": "https://elibrary.judiciary.gov.ph/thebookshelf/showdocs/1/34949"
+   },
+   {
+    "doc_id": "gr-102858",
+    "citation": "Director of Lands v. Abistado — on the in rem character of registration",
+    "role": "related",
+    "quote": "An in rem proceeding is validated essentially through publication",
+    "source_url": "https://elibrary.judiciary.gov.ph/thebookshelf/showdocs/1/34949"
+   }
+  ],
+  "difficulty": 2
+ },
+ {
+  "id": "q-civil-0008",
+  "schema_version": 2,
+  "type": "hypothetical",
+  "subject": "civil",
+  "question": "Conchita sells two parcels of land to her brother Anacleto. Unknown to the buyer's side of the argument later raised, Conchita had already lost title to the parcels before the sale — she was no longer the owner when she signed. On the same occasion the parties execute a second document giving Conchita the right to repurchase the same parcels. Years later she tries to enforce that repurchase agreement. Anacleto resists, arguing there was nothing to repurchase. Can Conchita enforce the right of repurchase?",
+  "answer_key": "No. This is Nool v. Court of Appeals. The sale was void because the sellers no longer had title at the time of sale — one cannot give what one does not have. The repurchase agreement was wholly dependent on that sale, and the Court held that a void contract cannot give rise to a valid one. The Civil Code says the same thing directly: a contract which is the direct result of a previous illegal contract is also void and inexistent. So the repurchase document is void as well, and there is nothing to enforce. Note that a void contract is not merely unenforceable — it produces no effect at all and cannot be ratified.",
+  "exceptions": "The rule assumes the second contract depends on the first. An independent agreement between the same parties, resting on its own cause and object, is not dragged down by the void one. Where goods rather than land are sold by a non-owner, Art. 1505 governs and admits exceptions — sales by authority of the owner, estoppel, and sales under statutory power — so a non-owner sale is not void in every setting.",
+  "authorities": [
+   {
+    "doc_id": "gr-116635",
+    "citation": "Nool v. Court of Appeals, G.R. No. 116635 (24 July 1997)",
+    "role": "controlling",
+    "quote": "A void contract cannot give rise to a valid one",
+    "source_url": "https://elibrary.judiciary.gov.ph/thebookshelf/showdocs/1/35001"
+   },
+   {
+    "doc_id": "ra-386-art-1422",
+    "citation": "Civil Code, Art. 1422",
+    "role": "controlling",
+    "quote": "A contract which is the direct result of a previous illegal contract, is also void and inexistent",
+    "source_url": "https://lawphil.net/statutes/repacts/ra1949/ra_386_1949.html"
+   },
+   {
+    "doc_id": "ra-386-art-1505",
+    "citation": "Civil Code, Art. 1505",
+    "role": "related",
+    "quote": "where goods are sold by a person who is not the owner thereof, and who does not sell them under authority or with the consent of the owner, the buyer acquires no better title to the goods",
+    "source_url": "https://lawphil.net/statutes/repacts/ra1949/ra_386_1949.html"
+   }
+  ],
+  "difficulty": 3
  }
 ]

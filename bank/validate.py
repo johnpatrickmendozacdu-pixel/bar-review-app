@@ -125,6 +125,40 @@ def load_elibrary(path) -> dict:
     return json.loads(path.read_text(encoding="utf-8"))
 
 
+ELIBRARY_HOST = "elibrary.judiciary.gov.ph"
+
+
+def elibrary_sources(statutes: dict, cases: list) -> dict:
+    """The Court's own texts, keyed by document id.
+
+    Statutes are fetched separately by tools/refresh_elibrary.py. Decisions are
+    already scraped from the e-Library during ingest, so they are primary text
+    already and are merged in here rather than fetched twice.
+    """
+    sources = dict(statutes)
+    for case in cases:
+        if ELIBRARY_HOST in case.get("source_url", ""):
+            sources[case["id"]] = {"url": case["source_url"], "text": case["text"]}
+    return sources
+
+
+def load_cases(corpus_dir) -> list:
+    path = pathlib.Path(corpus_dir) / "case.json"
+    return json.loads(path.read_text(encoding="utf-8")) if path.exists() else []
+
+
+def build_source_urls(corpus_dir) -> dict:
+    """doc id -> the URL the corpus actually recorded for it."""
+    corpus_dir = pathlib.Path(corpus_dir)
+    urls = {}
+    for name in ("statute.json", "case.json", "provisions.json"):
+        path = corpus_dir / name
+        if path.exists():
+            for doc in json.loads(path.read_text(encoding="utf-8")):
+                urls[doc["id"]] = doc["source_url"]
+    return urls
+
+
 def build_parents(corpus_dir) -> dict:
     """provision id -> its parent statute id, so a provision quote can be
     checked against the whole statute as the e-Library publishes it."""
@@ -143,10 +177,12 @@ def validate_item(
     superseded: dict | None = None,
     elibrary: dict | None = None,
     parents: dict | None = None,
+    source_urls: dict | None = None,
 ) -> None:
     superseded = superseded or {}
     elibrary = elibrary or {}
     parents = parents or {}
+    source_urls = source_urls or {}
     item_id = item.get("id", "<no id>")
 
     def fail(message):
@@ -198,6 +234,15 @@ def validate_item(
                     f"not cite what replaced it: {missing}"
                 )
 
+        # A fabricated link is as damaging as a fabricated quote: the student
+        # clicks it and lands somewhere that does not say what we claimed.
+        expected_url = source_urls.get(doc_id)
+        if expected_url and authority.get("source_url") != expected_url:
+            fail(
+                f"source_url for {doc_id} does not match the corpus document. "
+                f"Expected {expected_url!r}, got {authority.get('source_url')!r}"
+            )
+
         quote = _normalise(str(authority.get("quote", "")))
         if len(quote) < MIN_QUOTE_LENGTH:
             fail(f"quote for {doc_id} is too short to prove grounding: {quote!r}")
@@ -245,7 +290,7 @@ def role_of(authority: dict) -> str:
     return authority.get("role", DEFAULT_ROLE)
 
 
-def validate_bank(items, index, cutoff, superseded=None, elibrary=None, parents=None):
+def validate_bank(items, index, cutoff, superseded=None, elibrary=None, parents=None, source_urls=None):
     """Return (valid_items, error_messages). Bad items are dropped, not fixed."""
     valid = []
     errors = []
@@ -257,7 +302,7 @@ def validate_bank(items, index, cutoff, superseded=None, elibrary=None, parents=
 
     for item in items:
         try:
-            validate_item(item, index, cutoff, superseded, elibrary, parents)
+            validate_item(item, index, cutoff, superseded, elibrary, parents, source_urls)
         except ValidationError as exc:
             errors.append(str(exc))
             continue

@@ -8,6 +8,9 @@ import sys
 from bank.validate import (
     build_index,
     build_parents,
+    build_source_urls,
+    elibrary_sources,
+    load_cases,
     load_elibrary,
     load_superseded,
     validate_bank,
@@ -20,9 +23,15 @@ def main() -> int:
     items = json.loads(pathlib.Path("bank/questions.json").read_text(encoding="utf-8"))
     index = build_index(pathlib.Path("corpus"))
     superseded = load_superseded(pathlib.Path("bank/superseded.json"))
-    elibrary = load_elibrary(pathlib.Path("corpus/elibrary_statutes.json"))
+    elibrary = elibrary_sources(
+        load_elibrary(pathlib.Path("corpus/elibrary_statutes.json")),
+        load_cases(pathlib.Path("corpus")),
+    )
     parents = build_parents(pathlib.Path("corpus"))
-    valid, errors = validate_bank(items, index, CUTOFF, superseded, elibrary, parents)
+    source_urls = build_source_urls(pathlib.Path("corpus"))
+    valid, errors = validate_bank(
+        items, index, CUTOFF, superseded, elibrary, parents, source_urls
+    )
 
     print(
         f"{len(valid)} valid, {len(errors)} rejected, {len(index)} corpus documents, "

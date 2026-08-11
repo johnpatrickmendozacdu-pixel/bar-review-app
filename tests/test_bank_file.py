@@ -5,6 +5,9 @@ import pathlib
 from bank.validate import (
     build_index,
     build_parents,
+    build_source_urls,
+    elibrary_sources,
+    load_cases,
     load_elibrary,
     load_superseded,
     validate_bank,
@@ -28,8 +31,12 @@ def test_every_shipped_item_passes_the_gate():
         index,
         CUTOFF,
         load_superseded(pathlib.Path("bank/superseded.json")),
-        load_elibrary(pathlib.Path("corpus/elibrary_statutes.json")),
+        elibrary_sources(
+            load_elibrary(pathlib.Path("corpus/elibrary_statutes.json")),
+            load_cases(pathlib.Path("corpus")),
+        ),
         build_parents(pathlib.Path("corpus")),
+        build_source_urls(pathlib.Path("corpus")),
     )
     assert not errors, "invalid items in the shipped bank:\n" + "\n".join(errors)
     assert len(valid) == len(items)
